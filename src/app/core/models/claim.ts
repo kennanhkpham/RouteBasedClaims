@@ -1,1 +1,1 @@
-export interface Claim {}
+export interface Claim{}
