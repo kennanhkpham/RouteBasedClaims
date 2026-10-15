@@ -1,1 +1,119 @@
-<p>claim-review works!</p>
+<section class="page-heading" aria-labelledby="review-title">
+  <div>
+    <p class="eyebrow">ADMINISTRATION</p>
+    <h1 id="review-title">Claim review</h1>
+    <p class="intro">Review prescription claims and update their decision.</p>
+  </div>
+  <button
+    class="refresh-button"
+    type="button"
+    (click)="loadClaims()"
+    [disabled]="isLoading() || updatingClaimId() !== null">
+    {{ isLoading() ? 'Refreshing…' : 'Refresh claims' }}
+  </button>
+</section>
+
+<section class="overview" aria-label="Claim review summary">
+  <div class="summary-card">
+    <span class="summary-label">Total claims</span>
+    <strong>{{ claims().length }}</strong>
+  </div>
+  <div class="summary-card">
+    <span class="summary-label">Pending review</span>
+    <strong>{{ pendingCount() }}</strong>
+  </div>
+</section>
+
+@if (errorMessage()) {
+  <p class="alert alert-error" role="alert">{{ errorMessage() }}</p>
+}
+
+@if (successMessage()) {
+  <p class="alert alert-success" role="status">{{ successMessage() }}</p>
+}
+
+<section class="review-card" aria-labelledby="claims-heading">
+  <div class="table-heading">
+    <div>
+      <h2 id="claims-heading">Prescription claims</h2>
+      <p>Choose a status and save your decision.</p>
+    </div>
+  </div>
+
+  @if (isLoading() && claims().length === 0) {
+    <p class="empty-state" role="status">Loading claims…</p>
+  } @else if (claims().length === 0 && !errorMessage()) {
+    <p class="empty-state">There are no claims to review yet.</p>
+  } @else if (claims().length > 0) {
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Claim</th>
+            <th scope="col">Client</th>
+            <th scope="col">Prescription</th>
+            <th scope="col">Submitted</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (claim of claims(); track claim.claimId ?? claim.claimNumber ?? claim.fullName) {
+            <tr>
+              <td>
+                <span class="claim-number">{{ claim.claimNumber ?? 'Claim number unavailable' }}</span>
+                <span class="secondary-text">Policy {{ claim.policyNumber }}</span>
+              </td>
+              <td>
+                <span>{{ claim.fullName }}</span>
+                <span class="secondary-text">{{ claim.email }}</span>
+              </td>
+              <td>
+                <span class="medication-name">{{ claim.prescriptionDetail.medicationName }}</span>
+                <span class="secondary-text">{{ claim.prescriptionDetail.prescriptionNumber }}</span>
+                <span class="secondary-text">{{ claim.prescriptionDetail.doctorName }}</span>
+              </td>
+              <td>{{ claim.createdAt ? (claim.createdAt | date) : '—' }}</td>
+              <td>{{ claim.amountCost | currency }}</td>
+              <td>
+                <div class="status-control">
+                  <label class="visually-hidden" [for]="'status-' + (claim.claimId ?? claim.claimNumber)">
+                    Status for {{ claim.claimNumber ?? claim.fullName }}
+                  </label>
+                  <select
+                    [id]="'status-' + (claim.claimId ?? claim.claimNumber)"
+                    [value]="selectedStatus(claim)"
+                    (change)="onStatusSelection(claim, $event)"
+                    [disabled]="isLoading() || claim.claimId === undefined || updatingClaimId() !== null"
+                    [attr.aria-describedby]="'current-status-' + (claim.claimId ?? claim.claimNumber)">
+                    @for (status of statuses; track status) {
+                      <option [value]="status">{{ status }}</option>
+                    }
+                  </select>
+                  <span
+                    class="current-status"
+                    [class.status-approved]="claim.status === 'Approved'"
+                    [class.status-rejected]="claim.status === 'Rejected'"
+                    [id]="'current-status-' + (claim.claimId ?? claim.claimNumber)">
+                    Current: {{ claim.status ?? 'Submitted' }}
+                  </span>
+                  <button
+                    class="save-button"
+                    type="button"
+                    (click)="onUpdateStatus(claim)"
+                    [disabled]="isLoading() || !hasStatusChange(claim) || updatingClaimId() !== null"
+                    [attr.aria-label]="'Save status for ' + (claim.claimNumber ?? claim.fullName)">
+                    {{ updatingClaimId() === claim.claimId ? 'Saving…' : 'Save' }}
+                  </button>
+                  @if (claim.claimId === undefined) {
+                    <span class="secondary-text">Status cannot be updated: claim ID unavailable.</span>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

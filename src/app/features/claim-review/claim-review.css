@@ -1,0 +1,254 @@
+:host {
+  display: block;
+}
+
+.page-heading {
+  align-items: flex-end;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+}
+
+.eyebrow {
+  color: #14735e;
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  margin: 0 0 0.55rem;
+}
+
+h1 {
+  color: #173d38;
+  font-size: clamp(2rem, 4vw, 2.65rem);
+  letter-spacing: -0.045em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.intro,
+.table-heading p {
+  color: #526660;
+  line-height: 1.6;
+  margin: 0.6rem 0 0;
+}
+
+button,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.85rem;
+}
+
+button:focus-visible,
+select:focus-visible {
+  outline: 3px solid #14735e;
+  outline-offset: 3px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.refresh-button {
+  background: #eaf4f1;
+  color: #0e5f4c;
+  flex: 0 0 auto;
+}
+
+.overview {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 1.5rem;
+  max-width: 460px;
+}
+
+.summary-card,
+.review-card {
+  background: #fff;
+  border: 1px solid #e0e8e5;
+  border-radius: 0.85rem;
+  box-shadow: 0 10px 26px rgb(23 61 56 / 5%);
+}
+
+.summary-card {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem 1.2rem;
+}
+
+.summary-label,
+.secondary-text,
+.current-status {
+  color: #526660;
+  font-size: 0.82rem;
+}
+
+.summary-card strong {
+  color: #173d38;
+  font-size: 1.6rem;
+}
+
+.review-card {
+  overflow: hidden;
+}
+
+.table-heading {
+  border-bottom: 1px solid #e7edeb;
+  padding: 1.2rem 1.4rem;
+}
+
+.table-heading h2 {
+  color: #203c36;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.table-heading p {
+  font-size: 0.88rem;
+  margin-top: 0.25rem;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  min-width: 850px;
+  text-align: left;
+  width: 100%;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e7edeb;
+  padding: 0.9rem 1rem;
+  vertical-align: top;
+}
+
+th {
+  background: #f7faf9;
+  color: #526660;
+  font-size: 0.76rem;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+td {
+  color: #263d37;
+  font-size: 0.9rem;
+}
+
+.claim-number,
+.secondary-text,
+.medication-name {
+  display: block;
+}
+
+.claim-number,
+.medication-name {
+  font-weight: 700;
+}
+
+.secondary-text,
+.current-status {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.status-control {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 125px;
+}
+
+select {
+  background: #fff;
+  border: 1px solid #b9c9c3;
+  border-radius: 0.45rem;
+  color: #1d302c;
+  min-height: 2.35rem;
+  padding: 0.4rem 1.8rem 0.4rem 0.6rem;
+}
+
+.status-approved {
+  color: #1b684e;
+}
+
+.status-rejected {
+  color: #9c3030;
+}
+
+.save-button {
+  background: #126b57;
+  color: #fff;
+  min-height: 2.2rem;
+  padding: 0.4rem 0.75rem;
+}
+
+.empty-state {
+  color: #526660;
+  margin: 0;
+  padding: 2rem 1.4rem;
+  text-align: center;
+}
+
+.alert {
+  border-radius: 0.6rem;
+  line-height: 1.5;
+  margin: 0 0 1.25rem;
+  padding: 0.85rem 1rem;
+}
+
+.alert-error {
+  background: #fff0ef;
+  color: #842222;
+}
+
+.alert-success {
+  background: #edf7f1;
+  color: #1b503e;
+}
+
+.visually-hidden {
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+@media (max-width: 560px) {
+  .page-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .overview {
+    gap: 0.65rem;
+  }
+
+  .summary-card,
+  .table-heading {
+    padding: 0.9rem;
+  }
+}

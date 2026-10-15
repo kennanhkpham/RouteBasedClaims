@@ -1,0 +1,93 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.site-header {
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #dfe6e4;
+  display: flex;
+  justify-content: space-between;
+  min-height: 76px;
+  padding: 0 clamp(1rem, 6vw, 5rem);
+}
+
+.brand {
+  align-items: center;
+  color: #173d38;
+  display: flex;
+  font-size: 1.05rem;
+  font-weight: 750;
+  gap: 0.7rem;
+  text-decoration: none;
+}
+
+.brand-mark {
+  align-items: center;
+  background: #16745f;
+  border-radius: 0.75rem;
+  color: #fff;
+  display: inline-flex;
+  height: 2.25rem;
+  justify-content: center;
+  width: 2.25rem;
+}
+
+.brand-subtitle {
+  color: #61736f;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-left: 0.35rem;
+}
+
+.primary-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.primary-nav a {
+  border-radius: 0.5rem;
+  color: #425752;
+  font-size: 0.93rem;
+  font-weight: 650;
+  padding: 0.65rem 0.9rem;
+  text-decoration: none;
+}
+
+.primary-nav a:hover,
+.primary-nav a.active {
+  background: #eaf4f1;
+  color: #0e5f4c;
+}
+
+.primary-nav a:focus-visible,
+.brand:focus-visible {
+  outline: 3px solid #16745f;
+  outline-offset: 3px;
+}
+
+.page-content {
+  margin: 0 auto;
+  max-width: 1120px;
+  padding: clamp(2rem, 6vw, 4.5rem) 1.25rem;
+}
+
+@media (max-width: 520px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.8rem;
+    padding-bottom: 0.85rem;
+    padding-top: 0.85rem;
+  }
+
+  .primary-nav {
+    width: 100%;
+  }
+
+  .primary-nav a {
+    flex: 1;
+    text-align: center;
+  }
+}

@@ -1,1 +1,64 @@
-<p>claim-status works!</p>
+<section class="page-heading" aria-labelledby="status-title">
+  <h1 id="status-title">Check claim status</h1>
+  <p class="intro">Enter the claim number provided after submission to see the latest status.</p>
+</section>
+
+<form class="lookup-card" [formGroup]="lookupForm" (ngSubmit)="onSearch()" novalidate>
+  <label for="claimNumber">Claim number</label>
+  <div class="search-row">
+    <input id="claimNumber" formControlName="claimNumber" autocomplete="off" placeholder="e.g. CLM-A1B2C3D4" required
+      [attr.aria-invalid]="lookupForm.controls.claimNumber.invalid && lookupForm.controls.claimNumber.touched"
+      [attr.aria-describedby]="lookupForm.controls.claimNumber.invalid && lookupForm.controls.claimNumber.touched ? 'claimNumber-error' : null">
+    <button type="submit" [disabled]="isSearching()">
+      {{ isSearching() ? 'Searching…' : 'Check status' }}
+    </button>
+  </div>
+  @if (lookupForm.controls.claimNumber.invalid && lookupForm.controls.claimNumber.touched) {
+    <span class="field-error" id="claimNumber-error">Enter a claim number.</span>
+  }
+</form>
+
+@if (errorMessage()) {
+  <p class="alert alert-error" role="alert">{{ errorMessage() }}</p>
+}
+
+@if (claim(); as result) {
+  <section class="result-card" aria-labelledby="result-title" aria-live="polite">
+    <div class="result-heading">
+      <div>
+        <p class="eyebrow">CLAIM DETAILS</p>
+        <h2 id="result-title">{{ result.claimNumber }}</h2>
+      </div>
+      <span class="status-badge"
+        [class.status-approved]="result.status === 'Approved'"
+        [class.status-rejected]="result.status === 'Rejected'">
+        {{ result.status }}
+      </span>
+    </div>
+
+    <dl class="claim-details">
+      <div>
+        <dt>Client</dt>
+        <dd>{{ result.fullName }}</dd>
+      </div>
+      <div>
+        <dt>Policy number</dt>
+        <dd>{{ result.policyNumber }}</dd>
+      </div>
+      <div>
+        <dt>Medication</dt>
+        <dd>{{ result.prescriptionDetail.medicationName }}</dd>
+      </div>
+      <div>
+        <dt>Claim amount</dt>
+        <dd>{{ result.amountCost | currency }}</dd>
+      </div>
+      @if (result.createdAt) {
+        <div>
+          <dt>Submitted</dt>
+          <dd>{{ result.createdAt | date }}</dd>
+        </div>
+      }
+    </dl>
+  </section>
+}

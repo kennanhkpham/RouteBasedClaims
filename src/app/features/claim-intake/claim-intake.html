@@ -1,1 +1,118 @@
-<p>claim-intake works!</p>
+<section class="page-heading" aria-labelledby="intake-title">
+  <h1 id="intake-title">Submit a new claim</h1>
+  <p class="intro">Enter the client's and prescription's details. We'll create a claim number to track its progress.</p>
+</section>
+
+<form class="form-card" [formGroup]="claimForm" (ngSubmit)="onSubmit()" novalidate>
+  <fieldset>
+    <legend>Client information</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label for="fullName">Client full name</label>
+        <input id="fullName" formControlName="fullName" autocomplete="name" required
+          [attr.aria-invalid]="claimForm.controls.fullName.invalid && claimForm.controls.fullName.touched"
+          [attr.aria-describedby]="claimForm.controls.fullName.invalid && claimForm.controls.fullName.touched ? 'fullName-error' : null">
+        @if (claimForm.controls.fullName.invalid && claimForm.controls.fullName.touched) {
+          <span class="field-error" id="fullName-error">Enter the client's full name.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="policyNumber">Policy number</label>
+        <input id="policyNumber" formControlName="policyNumber" autocomplete="off" required
+          [attr.aria-invalid]="claimForm.controls.policyNumber.invalid && claimForm.controls.policyNumber.touched"
+          [attr.aria-describedby]="claimForm.controls.policyNumber.invalid && claimForm.controls.policyNumber.touched ? 'policyNumber-error' : null">
+        @if (claimForm.controls.policyNumber.invalid && claimForm.controls.policyNumber.touched) {
+          <span class="field-error" id="policyNumber-error">Enter a policy number.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" type="email" formControlName="email" autocomplete="email" required
+          [attr.aria-invalid]="claimForm.controls.email.invalid && claimForm.controls.email.touched"
+          [attr.aria-describedby]="claimForm.controls.email.invalid && claimForm.controls.email.touched ? 'email-error' : null">
+        @if (claimForm.controls.email.invalid && claimForm.controls.email.touched) {
+          <span class="field-error" id="email-error">Enter a valid email address.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="amountCost">Claim amount</label>
+        <div class="amount-input">
+          <span aria-hidden="true">$</span>
+          <input id="amountCost" type="number" formControlName="amountCost" min="0.01" step="0.01" required
+            [attr.aria-invalid]="claimForm.controls.amountCost.invalid && claimForm.controls.amountCost.touched"
+            [attr.aria-describedby]="claimForm.controls.amountCost.invalid && claimForm.controls.amountCost.touched ? 'amountCost-error' : null">
+        </div>
+        @if (claimForm.controls.amountCost.invalid && claimForm.controls.amountCost.touched) {
+          <span class="field-error" id="amountCost-error">Enter an amount greater than $0.</span>
+        }
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset formGroupName="prescriptionDetail">
+    <legend>Prescription information</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label for="medicationName">Medication name</label>
+        <input id="medicationName" formControlName="medicationName" required
+          [attr.aria-invalid]="claimForm.controls.prescriptionDetail.controls.medicationName.invalid && claimForm.controls.prescriptionDetail.controls.medicationName.touched"
+          [attr.aria-describedby]="claimForm.controls.prescriptionDetail.controls.medicationName.invalid && claimForm.controls.prescriptionDetail.controls.medicationName.touched ? 'medicationName-error' : null">
+        @if (claimForm.controls.prescriptionDetail.controls.medicationName.invalid && claimForm.controls.prescriptionDetail.controls.medicationName.touched) {
+          <span class="field-error" id="medicationName-error">Enter a medication name.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="prescriptionNumber">Prescription number</label>
+        <input id="prescriptionNumber" formControlName="prescriptionNumber" required
+          [attr.aria-invalid]="claimForm.controls.prescriptionDetail.controls.prescriptionNumber.invalid && claimForm.controls.prescriptionDetail.controls.prescriptionNumber.touched"
+          [attr.aria-describedby]="claimForm.controls.prescriptionDetail.controls.prescriptionNumber.invalid && claimForm.controls.prescriptionDetail.controls.prescriptionNumber.touched ? 'prescriptionNumber-error' : null">
+        @if (claimForm.controls.prescriptionDetail.controls.prescriptionNumber.invalid && claimForm.controls.prescriptionDetail.controls.prescriptionNumber.touched) {
+          <span class="field-error" id="prescriptionNumber-error">Enter a prescription number.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="doctorName">Prescribing doctor</label>
+        <input id="doctorName" formControlName="doctorName" required
+          [attr.aria-invalid]="claimForm.controls.prescriptionDetail.controls.doctorName.invalid && claimForm.controls.prescriptionDetail.controls.doctorName.touched"
+          [attr.aria-describedby]="claimForm.controls.prescriptionDetail.controls.doctorName.invalid && claimForm.controls.prescriptionDetail.controls.doctorName.touched ? 'doctorName-error' : null">
+        @if (claimForm.controls.prescriptionDetail.controls.doctorName.invalid && claimForm.controls.prescriptionDetail.controls.doctorName.touched) {
+          <span class="field-error" id="doctorName-error">Enter the prescribing doctor's name.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="datePrescribed">Date prescribed</label>
+        <input id="datePrescribed" type="date" formControlName="datePrescribed" required
+          [attr.aria-invalid]="claimForm.controls.prescriptionDetail.controls.datePrescribed.invalid && claimForm.controls.prescriptionDetail.controls.datePrescribed.touched"
+          [attr.aria-describedby]="claimForm.controls.prescriptionDetail.controls.datePrescribed.invalid && claimForm.controls.prescriptionDetail.controls.datePrescribed.touched ? 'datePrescribed-error' : null">
+        @if (claimForm.controls.prescriptionDetail.controls.datePrescribed.invalid && claimForm.controls.prescriptionDetail.controls.datePrescribed.touched) {
+          <span class="field-error" id="datePrescribed-error">Select the date prescribed.</span>
+        }
+      </div>
+    </div>
+  </fieldset>
+
+  @if (errorMessage()) {
+    <p class="alert alert-error" role="alert">{{ errorMessage() }}</p>
+  }
+
+  @if (submittedClaim(); as claim) {
+    <section class="alert alert-success" aria-live="polite" aria-labelledby="success-title">
+      <h2 id="success-title">Claim submitted</h2>
+      <p>Save this claim number to check its status later:</p>
+      <strong>{{ claim.claimNumber }}</strong>
+    </section>
+  }
+
+  <div class="form-actions">
+    <p>All fields are required.</p>
+    <button type="submit" [disabled]="isSaving()">
+      {{ isSaving() ? 'Submitting…' : 'Submit claim' }}
+    </button>
+  </div>
+</form>

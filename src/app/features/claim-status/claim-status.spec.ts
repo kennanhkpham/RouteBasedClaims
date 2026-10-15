@@ -1,16 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ClaimStatus } from './claim-status';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ClaimStatusComponent } from './claim-status';
 
-describe('ClaimStatus', () => {
-  let component: ClaimStatus;
-  let fixture: ComponentFixture<ClaimStatus>;
+describe('ClaimStatusComponent', () => {
+  let component: ClaimStatusComponent;
+  let fixture: ComponentFixture<ClaimStatusComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ClaimStatus],
+      imports: [ClaimStatusComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ClaimStatus);
+    fixture = TestBed.createComponent(ClaimStatusComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

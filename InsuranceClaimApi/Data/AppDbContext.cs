@@ -8,6 +8,7 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<Claim> Claims => Set<Claim>();
+    public DbSet<Client> Clients => Set<Client>();
     public DbSet<PrescriptionDetails> PrescriptionDetails => Set<PrescriptionDetails>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

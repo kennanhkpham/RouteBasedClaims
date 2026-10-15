@@ -1,16 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ClaimIntake } from './claim-intake';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ClaimIntakeComponent } from './claim-intake';
 
-describe('ClaimIntake', () => {
-  let component: ClaimIntake;
-  let fixture: ComponentFixture<ClaimIntake>;
+describe('ClaimIntakeComponent', () => {
+  let component: ClaimIntakeComponent;
+  let fixture: ComponentFixture<ClaimIntakeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ClaimIntake],
+      imports: [ClaimIntakeComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ClaimIntake);
+    fixture = TestBed.createComponent(ClaimIntakeComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

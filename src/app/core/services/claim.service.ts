@@ -1,26 +1,29 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Claim } from './claim';
-import { Client } from './client';
+import { Claim, CreateClaimRequest } from '../models/Claim.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClaimService {
-  private http = inject(HttpClient);
-  private apiUrl = 'https://localhost:7123/api/claims'; // Update port as needed
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'https://localhost:7197/api/claims';
 
-  submitClaim(data: Claim): Observable<Client> {
-    return this.http.post<Client>(this.apiUrl, data);
+  submitClaim(data: CreateClaimRequest): Observable<Claim> {
+    return this.http.post<Claim>(this.apiUrl, data);
   }
 
-  getClaimByNumber(claimNumber: string): Observable<Client> {
-    return this.http.get<Client>(`${this.apiUrl}/${claimNumber}`);
+  getClaims(): Observable<Claim[]> {
+    return this.http.get<Claim[]>(this.apiUrl);
   }
 
-  getPendingClaims(): Observable<Client[]> {
-    return this.http.get<Client[]>(`${this.apiUrl}/pending`);
+  getClaimByNumber(claimNumber: string): Observable<Claim> {
+    return this.http.get<Claim>(`${this.apiUrl}/${encodeURIComponent(claimNumber)}`);
+  }
+
+  getPendingClaims(): Observable<Claim[]> {
+    return this.http.get<Claim[]>(`${this.apiUrl}/pending`);
   }
 
   updateStatus(claimId: number, status: string): Observable<void> {

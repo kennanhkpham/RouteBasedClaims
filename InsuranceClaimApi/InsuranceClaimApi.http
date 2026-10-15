@@ -1,6 +1,37 @@
 @InsuranceClaimApi_HostAddress = http://localhost:5284
 
-GET {{InsuranceClaimApi_HostAddress}}/weatherforecast/
+POST {{InsuranceClaimApi_HostAddress}}/api/Claims
+Content-Type: application/json
 Accept: application/json
 
+{
+  "policyNumber": "POL-1001",
+  "fullName": "John Doe",
+  "email": "john.doe@example.com",
+  "amountCost": 125.50,
+  "prescriptionDetail": {
+    "prescriptionNumber": "RX-NEW",
+    "doctorName": "Dr. Alice Carter",
+    "datePrescribed": "2026-10-14T00:00:00Z",
+    "medicationName": "Amoxicillin"
+  }
+}
+
 ###
+
+PUT {{InsuranceClaimApi_HostAddress}}/api/Claims/CLM-A1B2C3D1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "policyNumber": "POL-1001",
+  "fullName": "John Doe",
+  "email": "john.doe@example.com",
+  "amountCost": 130.75,
+  "prescriptionDetail": {
+    "prescriptionNumber": "RX-NEW-1001",
+    "doctorName": "Dr. Alice Carter",
+    "datePrescribed": "2026-10-14T00:00:00Z",
+    "medicationName": "Amoxicillin"
+  }
+}

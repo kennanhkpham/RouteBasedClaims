@@ -167,3 +167,43 @@ C:\Users\kenna\OneDrive\Desktop\Reventure Job Training - Associative Software De
 C:\Users\kenna\OneDrive\Desktop\Reventure Job Training - Associative Software Developer\coding_practice\Angular_Practice\RouteBasedClaim\InsuranceClaimApi\obj\Debug\net10.0\InsuranceClaimApi.pdb
 C:\Users\kenna\OneDrive\Desktop\Reventure Job Training - Associative Software Developer\coding_practice\Angular_Practice\RouteBasedClaim\InsuranceClaimApi\obj\Debug\net10.0\InsuranceClaimApi.genruntimeconfig.cache
 C:\Users\kenna\OneDrive\Desktop\Reventure Job Training - Associative Software Developer\coding_practice\Angular_Practice\RouteBasedClaim\InsuranceClaimApi\obj\Debug\net10.0\ref\InsuranceClaimApi.dll
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-build\appsettings.Development.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-build\appsettings.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-build\InsuranceClaimApi.staticwebassets.endpoints.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-build\InsuranceClaimApi.exe
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-build\InsuranceClaimApi.deps.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-build\InsuranceClaimApi.runtimeconfig.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-build\InsuranceClaimApi.dll
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-build\InsuranceClaimApi.pdb
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-put-build\appsettings.Development.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-put-build\appsettings.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-put-build\InsuranceClaimApi.staticwebassets.endpoints.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-put-build\InsuranceClaimApi.exe
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-put-build\InsuranceClaimApi.deps.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-put-build\InsuranceClaimApi.runtimeconfig.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-put-build\InsuranceClaimApi.dll
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaims-put-build\InsuranceClaimApi.pdb
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild\appsettings.Development.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild\appsettings.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild\InsuranceClaimApi.staticwebassets.endpoints.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild\InsuranceClaimApi.deps.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild\InsuranceClaimApi.runtimeconfig.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild\InsuranceClaimApi.dll
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild\InsuranceClaimApi.pdb
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild\InsuranceClaimApi.exe
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild2\appsettings.Development.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild2\appsettings.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild2\InsuranceClaimApi.staticwebassets.endpoints.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild2\InsuranceClaimApi.exe
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild2\InsuranceClaimApi.deps.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild2\InsuranceClaimApi.runtimeconfig.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild2\InsuranceClaimApi.dll
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsApiBuild2\InsuranceClaimApi.pdb
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\appsettings.Development.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\appsettings.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\InsuranceClaimApi.staticwebassets.endpoints.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\InsuranceClaimApi.exe
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\InsuranceClaimApi.deps.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\InsuranceClaimApi.runtimeconfig.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\InsuranceClaimApi.dll
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\InsuranceClaimApi.pdb
