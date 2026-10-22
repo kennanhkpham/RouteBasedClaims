@@ -1,6 +1,7 @@
 using InsuranceClaimApi.Dtos;
 using InsuranceClaimApi.Data;
 using InsuranceClaimApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -66,6 +67,7 @@ public class ClaimsController : ControllerBase
 
     // GET: api/claims (Admin claim review)
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<ClaimResponseDto>>> GetClaims(
         CancellationToken cancellationToken)
     {
@@ -80,6 +82,7 @@ public class ClaimsController : ControllerBase
 
     // GET: api/claims/pending (Reviewer View)
     [HttpGet("pending")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<ClaimResponseDto>>> GetPendingClaims()
     {
         var claims = await _context.Claims
@@ -94,6 +97,7 @@ public class ClaimsController : ControllerBase
 
     // PUT: api/claims/{claimNumber} (Create or replace a claim)
     [HttpPut("{claimNumber}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ClaimResponseDto>> PutClaim(
         string claimNumber,
         [FromBody] CreateClaimDto dto,
@@ -153,6 +157,7 @@ public class ClaimsController : ControllerBase
     }
     // PATCH: api/claims/{id}/status (Approve/Reject Claim)
     [HttpPatch("{id}/status")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateStatus(
         int id,
         [FromBody] UpdateStatusDto dto,
@@ -216,6 +221,7 @@ public class ClaimsController : ControllerBase
 
     // GET: api/claims/{claimNumber} (Delete Claim)
     [HttpDelete("{claimNumber}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ClaimResponseDto>> DeleteClaim(
         string claimNumber,
         CancellationToken cancellationToken)

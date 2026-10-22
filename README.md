@@ -12,6 +12,10 @@ The app follows a three-tier flow; the browser never connects directly to SQL Se
 
 Configure the API's `DefaultConnection` connection string and ensure its database schema exists before submitting claims. Start the API with its `https` launch profile (`https://localhost:7197`), then start Angular with `ng serve` (`http://localhost:4200`). The Angular API service targets that HTTPS API URL, and the API's CORS policy allows the local Angular origin.
 
+### Admin claim review sign-in
+
+Selecting **Claim Review** opens the admin sign-in page. For this demo, use username `admin` and password `ClaimReview123!`. The API issues a one-hour JWT and requires the Admin role for claim-list, pending-claim, claim-update, and claim-delete endpoints. In Claim Review, an admin can mark a claim **Inactive** or **Rejected** and use its Delete action to permanently remove it after confirming. The browser stores the token in session storage and sends it as a bearer token; leaving Claim Review clears the session. These credentials and the signing key are hardcoded for local testing only; replace them with secure configuration and proper credential storage before deployment.
+
 ## Start the application on Windows
 
 After installing the .NET SDK and Node.js, run `start.bat` from File Explorer or a terminal in the project folder. It opens separate terminals for the HTTPS API and Angular frontend. Open `http://localhost:4200` in your browser. Stop each server with `Ctrl+C` in its terminal. If the frontend dependencies have not been installed yet, run `npm install` from the project folder first.

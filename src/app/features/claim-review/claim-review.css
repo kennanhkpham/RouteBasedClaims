@@ -124,7 +124,7 @@ button:disabled {
 
 table {
   border-collapse: collapse;
-  min-width: 850px;
+  min-width: 980px;
   text-align: left;
   width: 100%;
 }
@@ -201,6 +201,15 @@ select {
   color: #fff;
   min-height: 2.2rem;
   padding: 0.4rem 0.75rem;
+}
+
+.delete-button {
+  background: #fff0ef;
+  color: #9c3030;
+}
+
+.delete-button:hover:not(:disabled) {
+  background: #fbdedb;
 }
 
 .empty-state {

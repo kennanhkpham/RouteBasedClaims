@@ -29,4 +29,8 @@ export class ClaimService {
   updateStatus(claimId: number, status: string): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/${claimId}/status`, { status });
   }
+
+  deleteClaim(claimNumber: string): Observable<Claim> {
+    return this.http.delete<Claim>(`${this.apiUrl}/${encodeURIComponent(claimNumber)}`);
+  }
 }

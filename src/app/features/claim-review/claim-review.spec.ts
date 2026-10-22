@@ -56,4 +56,31 @@ describe('ClaimReviewerComponent', () => {
     expect(component.claims()[0].status).toBe('Approved');
     expect(component.successMessage()).toContain('CLM-123');
   });
+
+  it('deletes a rejected claim after confirmation', () => {
+    const rejectedClaim = { ...claim, status: 'Rejected' };
+    component.claims.set([rejectedClaim]);
+    vi.spyOn(globalThis, 'confirm').mockReturnValue(true);
+
+    component.onDeleteClaim(rejectedClaim);
+
+    const request = httpTestingController.expectOne(
+      'https://localhost:7197/api/claims/CLM-123',
+    );
+    expect(request.request.method).toBe('DELETE');
+    request.flush(rejectedClaim);
+
+    expect(component.claims()).toEqual([]);
+    expect(component.successMessage()).toContain('CLM-123 was deleted');
+  });
+
+  it('does not allow deleting an active claim', () => {
+    const confirmSpy = vi.spyOn(globalThis, 'confirm');
+
+    expect(component.canDeleteClaim(claim)).toBe(false);
+    component.onDeleteClaim(claim);
+
+    expect(confirmSpy).not.toHaveBeenCalled();
+    httpTestingController.expectNone('https://localhost:7197/api/claims/CLM-123');
+  });
 });

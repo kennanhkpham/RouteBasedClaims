@@ -55,6 +55,7 @@
             <th scope="col">Submitted</th>
             <th scope="col">Amount</th>
             <th scope="col">Status</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -101,7 +102,7 @@
                     class="save-button"
                     type="button"
                     (click)="onUpdateStatus(claim)"
-                    [disabled]="isLoading() || !hasStatusChange(claim) || updatingClaimId() !== null"
+                    [disabled]="isLoading() || !hasStatusChange(claim) || updatingClaimId() !== null || deletingClaimNumber() !== null"
                     [attr.aria-label]="'Save status for ' + (claim.claimNumber ?? claim.fullName)">
                     {{ updatingClaimId() === claim.claimId ? 'Saving…' : 'Save' }}
                   </button>
@@ -109,6 +110,20 @@
                     <span class="secondary-text">Status cannot be updated: claim ID unavailable.</span>
                   }
                 </div>
+              </td>
+              <td>
+                @if (canDeleteClaim(claim)) {
+                  <button
+                    class="delete-button"
+                    type="button"
+                    (click)="onDeleteClaim(claim)"
+                    [disabled]="isLoading() || updatingClaimId() !== null || deletingClaimNumber() !== null"
+                    [attr.aria-label]="'Delete ' + (claim.claimNumber ?? 'claim')">
+                    {{ deletingClaimNumber() === claim.claimNumber ? 'Deleting…' : 'Delete' }}
+                  </button>
+                } @else {
+                  <span class="secondary-text">Only rejected or inactive claims can be deleted.</span>
+                }
               </td>
             </tr>
           }

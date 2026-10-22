@@ -6,11 +6,15 @@
 .site-header {
   align-items: center;
   background: #fff;
-  border-bottom: 1px solid #dfe6e4;
   display: flex;
   justify-content: space-between;
   min-height: 76px;
   padding: 0 clamp(1rem, 6vw, 5rem);
+  justify-content: center;
+}
+
+.site-header a {
+  font-size: 3rem;
 }
 
 .brand {
@@ -29,9 +33,9 @@
   border-radius: 0.75rem;
   color: #fff;
   display: inline-flex;
-  height: 2.25rem;
+  height: 4rem;
   justify-content: center;
-  width: 2.25rem;
+  width: 4rem;
 }
 
 .brand-subtitle {
@@ -43,28 +47,43 @@
 
 .primary-nav {
   display: flex;
-  gap: 0.5rem;
+  gap: 5rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
 }
 
-.primary-nav a {
+.primary-nav a,
+.primary-nav button {
   border-radius: 0.5rem;
   color: #425752;
   font-size: 0.93rem;
   font-weight: 650;
-  padding: 0.65rem 0.9rem;
+  padding: 1rem 0.9rem;
+  margin: 0.5rem 0.45rem;
   text-decoration: none;
 }
 
 .primary-nav a:hover,
-.primary-nav a.active {
+.primary-nav a.active,
+.primary-nav button:hover {
   background: #eaf4f1;
   color: #0e5f4c;
 }
 
 .primary-nav a:focus-visible,
+.primary-nav button:focus-visible,
 .brand:focus-visible {
   outline: 3px solid #16745f;
   outline-offset: 3px;
+}
+
+.primary-nav button {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .page-content {
@@ -75,9 +94,9 @@
 
 @media (max-width: 520px) {
   .site-header {
-    align-items: flex-start;
+    align-items: center;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 2rem;
     padding-bottom: 0.85rem;
     padding-top: 0.85rem;
   }
@@ -86,8 +105,9 @@
     width: 100%;
   }
 
-  .primary-nav a {
-    flex: 1;
+  .primary-nav a,
+  .primary-nav button {
+    flex: 2;
     text-align: center;
   }
 }

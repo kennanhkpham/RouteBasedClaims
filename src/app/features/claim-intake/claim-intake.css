@@ -5,6 +5,9 @@
 .page-heading {
   margin: 0 auto 2rem;
   max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .eyebrow {
@@ -21,6 +24,9 @@ h1 {
   letter-spacing: -0.045em;
   line-height: 1.1;
   margin: 0;
+}
+p{
+  text-align: center;
 }
 
 .intro {

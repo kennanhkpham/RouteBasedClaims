@@ -207,3 +207,32 @@ C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\InsuranceClaimApi.
 C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\InsuranceClaimApi.runtimeconfig.json
 C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\InsuranceClaimApi.dll
 C:\Users\kenna\AppData\Local\Temp\RouteBasedClaimsDeleteBuild\InsuranceClaimApi.pdb
+C:\Users\kenna\OneDrive\Desktop\Reventure Job Training - Associative Software Developer\coding_practice\Angular_Practice\RouteBasedClaim\InsuranceClaimApi\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\kenna\OneDrive\Desktop\Reventure Job Training - Associative Software Developer\coding_practice\Angular_Practice\RouteBasedClaim\InsuranceClaimApi\bin\Debug\net10.0\Microsoft.Bcl.Cryptography.dll
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Debug\net10.0\BuildHost-net472\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.exe.config
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Release\net10.0\publish\web.config
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\appsettings.Development.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\appsettings.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Debug\net10.0\appsettings.Development.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Debug\net10.0\appsettings.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Debug\net10.0\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.deps.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Debug\net10.0\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.runtimeconfig.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Debug\net10.0\InsuranceClaimApi.deps.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Debug\net10.0\InsuranceClaimApi.runtimeconfig.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Debug\net10.0\InsuranceClaimApi.staticwebassets.endpoints.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Release\net10.0\appsettings.Development.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Release\net10.0\appsettings.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Release\net10.0\InsuranceClaimApi.deps.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Release\net10.0\InsuranceClaimApi.runtimeconfig.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Release\net10.0\InsuranceClaimApi.staticwebassets.endpoints.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Release\net10.0\publish\appsettings.Development.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Release\net10.0\publish\appsettings.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Release\net10.0\publish\InsuranceClaimApi.deps.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Release\net10.0\publish\InsuranceClaimApi.runtimeconfig.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\bin\Release\net10.0\publish\InsuranceClaimApi.staticwebassets.endpoints.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\InsuranceClaimApi.staticwebassets.endpoints.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\InsuranceClaimApi.exe
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\InsuranceClaimApi.deps.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\InsuranceClaimApi.runtimeconfig.json
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\InsuranceClaimApi.dll
+C:\Users\kenna\AppData\Local\Temp\RouteBasedClaim-build\Debug\net10.0\InsuranceClaimApi.pdb

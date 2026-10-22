@@ -10,6 +10,7 @@ const CLAIM_STATUSES = [
   'Pending Authorization',
   'Approved',
   'Rejected',
+  'Inactive',
 ] as const;
 
 @Component({
@@ -26,11 +27,14 @@ export class ClaimReviewerComponent {
   readonly statusEdits = signal<Record<number, string>>({});
   readonly isLoading = signal(false);
   readonly updatingClaimId = signal<number | null>(null);
+  readonly deletingClaimNumber = signal<string | null>(null);
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
 
   readonly pendingCount = computed(
-    () => this.claims().filter((claim) => claim.status !== 'Approved' && claim.status !== 'Rejected').length,
+    () => this.claims().filter((claim) =>
+      !['Approved', 'Rejected', 'Inactive'].includes(claim.status ?? 'Submitted'),
+    ).length,
   );
 
   constructor() {
@@ -86,6 +90,45 @@ export class ClaimReviewerComponent {
     return this.selectedStatus(claim) !== (claim.status ?? 'Submitted');
   }
 
+  canDeleteClaim(claim: Claim): boolean {
+    return ['Rejected', 'Inactive'].includes(claim.status ?? '') &&
+      claim.claimNumber !== undefined &&
+      claim.claimNumber.trim().length > 0;
+  }
+
+  onDeleteClaim(claim: Claim): void {
+    if (!this.canDeleteClaim(claim) || this.updatingClaimId() !== null || this.deletingClaimNumber() !== null) {
+      return;
+    }
+
+    const claimNumber = claim.claimNumber;
+    if (!claimNumber) {
+      return;
+    }
+    const confirmed = globalThis.confirm(
+      `Delete ${claimNumber}? This permanently removes the claim record.`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    this.errorMessage.set('');
+    this.successMessage.set('');
+    this.deletingClaimNumber.set(claimNumber);
+
+    this.claimService.deleteClaim(claimNumber).subscribe({
+      next: () => {
+        this.claims.update((claims) => claims.filter((item) => item.claimNumber !== claimNumber));
+        this.successMessage.set(`${claimNumber} was deleted.`);
+        this.deletingClaimNumber.set(null);
+      },
+      error: (error: unknown) => {
+        this.errorMessage.set(this.getErrorMessage(error, `Claim ${claimNumber} could not be deleted.`));
+        this.deletingClaimNumber.set(null);
+      },
+    });
+  }
+
   onUpdateStatus(claim: Claim): void {
     const claimId = claim.claimId;
     if (claimId === undefined) {
@@ -94,7 +137,7 @@ export class ClaimReviewerComponent {
     }
 
     const status = this.selectedStatus(claim);
-    if (!this.hasStatusChange(claim) || this.updatingClaimId() !== null) {
+    if (!this.hasStatusChange(claim) || this.updatingClaimId() !== null || this.deletingClaimNumber() !== null) {
       return;
     }
 

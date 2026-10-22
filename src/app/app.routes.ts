@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard, adminReviewExitGuard } from './app.guard';
 
 export const routes: Routes = [
   {
@@ -19,10 +20,18 @@ export const routes: Routes = [
         .then(m => m.ClaimStatusComponent)
   },
   {
+    path: 'admin-login',
+    loadComponent: () =>
+      import('./features/admin-login/admin-login')
+        .then(m => m.AdminLoginComponent)
+  },
+  {
     path: 'review',
     loadComponent: () =>
       import('./features/claim-review/claim-review')
-        .then(m => m.ClaimReviewerComponent)
+        .then(m => m.ClaimReviewerComponent),
+    canActivate: [adminGuard],
+    canDeactivate: [adminReviewExitGuard]
   },
   {
     path: '**',

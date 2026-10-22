@@ -31,7 +31,7 @@ public class Claim
 
     [Required]
     [Column("status")]
-    public string Status { get; set; } = "Submitted"; // Submitted, Approved, Rejected, Pending Authorization
+    public string Status { get; set; } = "Submitted"; // Submitted, Approved, Rejected, Pending Authorization, Inactive
 
     [Required]
     [Column("createdAt")]
