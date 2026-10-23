@@ -161,7 +161,7 @@ app.UseSwaggerUI();
 
 // Middleware
 app.UseHttpsRedirection();
-app.UseCors("AllowAngular");
+app.UseCors("AllowAngularFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
