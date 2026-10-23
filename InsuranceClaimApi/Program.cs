@@ -10,13 +10,15 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS: Allow the deployed Angular frontend and local development.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularFrontend", policy =>
     {
         policy
             .WithOrigins(
-                "https://lively-water-04b62c510.2.azurestaticapps.net"
+                "https://lively-water-04b62c510.2.azurestaticapps.net",
+                "http://localhost:4200"
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
@@ -27,17 +29,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// CORS for Angular frontend
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAngular", policy =>
-    {
-        policy.WithOrigins("http://localhost:4200")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
 
 // Controllers
 builder.Services.AddControllers();
@@ -140,7 +131,8 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// TEMPORARY diagnostic endpoint: remove after troubleshooting
+// Temporary diagnostic endpoint
+// Remove after troubleshooting is complete.
 app.MapGet("/debug/auth-check", () =>
 {
     return Results.Ok(new
@@ -159,9 +151,13 @@ app.MapGet("/debug/auth-check", () =>
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Middleware
+// Middleware pipeline
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
 app.UseCors("AllowAngularFrontend");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
