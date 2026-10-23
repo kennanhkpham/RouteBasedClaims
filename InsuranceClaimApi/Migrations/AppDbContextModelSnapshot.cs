@@ -68,6 +68,35 @@ namespace InsuranceClaimApi.Migrations
                     b.ToTable("Claim");
                 });
 
+            modelBuilder.Entity("InsuranceClaimApi.Models.Client", b =>
+                {
+                    b.Property<int>("ClientId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("clientId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClientId"));
+
+                    b.Property<string>("ClientEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("clientEmail");
+
+                    b.Property<string>("ClientFullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("clientFullName");
+
+                    b.Property<string>("ClientPolicyNum")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("clientPolicyNum");
+
+                    b.HasKey("ClientId");
+
+                    b.ToTable("Client");
+                });
+
             modelBuilder.Entity("InsuranceClaimApi.Models.PrescriptionDetails", b =>
                 {
                     b.Property<int>("PrescriptionId")

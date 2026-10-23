@@ -21,7 +21,7 @@ export class AuthService {
 
   login(username: string, password: string): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>('https://localhost:7197/api/auth/login', { username, password })
+      .post<LoginResponse>('https://route-claims-api-kennan-endwesajfhaxe8gj.westcentralus-01.azurewebsites.net/api/auth/login', { username, password })
       .pipe(tap((response) => this.saveSession(response)));
   }
 

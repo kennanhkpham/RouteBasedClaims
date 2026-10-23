@@ -8,7 +8,7 @@ import { Claim, CreateClaimRequest } from '../models/Claim.model';
 })
 export class ClaimService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://localhost:7197/api/claims';
+  private readonly apiUrl = 'https://route-claims-api-kennan-endwesajfhaxe8gj.westcentralus-01.azurewebsites.net/api/claims';
 
   submitClaim(data: CreateClaimRequest): Observable<Claim> {
     return this.http.post<Claim>(this.apiUrl, data);

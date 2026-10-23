@@ -155,3 +155,15 @@ WHERE NOT EXISTS (
 select * from Claim
 select * from Client
 select * from PrescriptionDetails
+
+SELECT DB_NAME() AS CurrentDatabase;
+
+SELECT
+    TABLE_SCHEMA,
+    TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE'
+ORDER BY TABLE_SCHEMA, TABLE_NAME;
+
+
+

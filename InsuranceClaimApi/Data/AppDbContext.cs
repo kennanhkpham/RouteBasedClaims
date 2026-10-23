@@ -15,7 +15,11 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Define 1-to-1 relationship between Claim and PrescriptionDetail
+        modelBuilder.Entity<Claim>().ToTable("Claim");
+        modelBuilder.Entity<Client>().ToTable("Client");
+        modelBuilder.Entity<PrescriptionDetails>()
+            .ToTable("PrescriptionDetails");
+
         modelBuilder.Entity<Claim>()
             .HasOne(c => c.PrescriptionDetail)
             .WithOne(p => p.Claim)
