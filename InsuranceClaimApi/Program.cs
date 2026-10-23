@@ -10,6 +10,19 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularFrontend", policy =>
+    {
+        policy
+            .WithOrigins(
+                "https://lively-water-04b62c510.2.azurestaticapps.net"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 // Database connection
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
