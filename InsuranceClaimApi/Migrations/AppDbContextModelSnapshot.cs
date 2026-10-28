@@ -22,6 +22,42 @@ namespace InsuranceClaimApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("InsuranceClaimApi.Models.Account", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("NormalizedUsername")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedUsername")
+                        .IsUnique();
+
+                    b.ToTable("Account", (string)null);
+                });
+
             modelBuilder.Entity("InsuranceClaimApi.Models.Claim", b =>
                 {
                     b.Property<int>("ClaimId")
@@ -65,7 +101,7 @@ namespace InsuranceClaimApi.Migrations
 
                     b.HasKey("ClaimId");
 
-                    b.ToTable("Claim");
+                    b.ToTable("Claim", (string)null);
                 });
 
             modelBuilder.Entity("InsuranceClaimApi.Models.Client", b =>
@@ -94,7 +130,7 @@ namespace InsuranceClaimApi.Migrations
 
                     b.HasKey("ClientId");
 
-                    b.ToTable("Client");
+                    b.ToTable("Client", (string)null);
                 });
 
             modelBuilder.Entity("InsuranceClaimApi.Models.PrescriptionDetails", b =>
@@ -134,7 +170,7 @@ namespace InsuranceClaimApi.Migrations
                     b.HasIndex("PrescriptionClaimId")
                         .IsUnique();
 
-                    b.ToTable("PrescriptionDetails");
+                    b.ToTable("PrescriptionDetails", (string)null);
                 });
 
             modelBuilder.Entity("InsuranceClaimApi.Models.PrescriptionDetails", b =>

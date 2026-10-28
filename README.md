@@ -10,11 +10,31 @@ The app follows a three-tier flow; the browser never connects directly to SQL Se
 2. **Web API:** `InsuranceClaimApi` exposes `POST /api/claims` and `GET /api/claims/{claimNumber}`. Its `ClaimsController` validates and maps the request/response.
 3. **SQL:** The API uses Entity Framework Core and `AppDbContext` to persist claims and prescription details in SQL Server.
 
-Configure the API's `DefaultConnection` connection string and ensure its database schema exists before submitting claims. Start the API with its `https` launch profile (`https://localhost:7197`), then start Angular with `ng serve` (`http://localhost:4200`). The Angular API service targets that HTTPS API URL, and the API's CORS policy allows the local Angular origin.
+Configure the API's `DefaultConnection` connection string and ensure its database schema exists before using the claims portal. Start the API with its `https` launch profile (`https://localhost:7197`), then start Angular with `ng serve` (`http://localhost:4200`). Local Angular development uses the local HTTPS API; production builds use the deployed Azure API URL. For local HTTPS, trust the .NET development certificate with `dotnet dev-certs https --trust`.
 
-### Admin claim review sign-in
+### Sign-in, accounts, and claim review
 
-Selecting **Claim Review** opens the admin sign-in page. For this demo, use username `admin` and password `ClaimReview123!`. The API issues a one-hour JWT and requires the Admin role for claim-list, pending-claim, claim-update, and claim-delete endpoints. In Claim Review, an admin can mark a claim **Inactive** or **Rejected** and use its Delete action to permanently remove it after confirming. The browser stores the token in session storage and sends it as a bearer token; leaving Claim Review clears the session. These credentials and the signing key are hardcoded for local testing only; replace them with secure configuration and proper credential storage before deployment.
+The app opens on the sign-in page, before displaying the navigation or claim pages. Users can sign in or create a claimant account. New accounts require a 12-character minimum password; passwords are stored as salted, one-way password hashes. Claimant accounts can use claim intake and status pages, but do not have administrator access. The **Claim Review** navigation link prompts for a separate administrator username and password at `/admin-login`. The backend verifies the account's password hash and `IsAdmin` database flag before returning an Admin-role JWT. Successful admin sign-in creates a separate admin session and token without replacing the claimant session. Only an Admin role can access reviewer operations. The API requires a valid JWT for all claim operations and the Admin role for reviewer operations. Use **Sign out** to end both sessions, or **Exit admin review** to return to the claimant app without ending the claimant session.
+
+After admin sign-in, **Manage Accounts** opens the protected account-creation page, where an administrator can create claimant accounts or grant administrator access to trusted reviewers. This endpoint requires an Admin JWT; public registration always creates claimant accounts and never accepts an admin flag. The first administrator is provisioned on API startup from `AdminBootstrap:Username` and `AdminBootstrap:Password`. The JWT signing key is read from `Jwt:SigningKey` and must be at least 32 bytes. Never commit these values or put production secrets in application source.
+
+For local development, set secrets from the `InsuranceClaimApi` directory (replace the database connection string and admin password with your own values):
+
+```powershell
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<your SQL Server connection string>"
+$rng = [Security.Cryptography.RandomNumberGenerator]::Create()
+$bytes = New-Object 'Byte[]' 32
+$rng.GetBytes($bytes)
+$rng.Dispose()
+$signingKey = [Convert]::ToBase64String($bytes)
+dotnet user-secrets set "Jwt:SigningKey" $signingKey
+dotnet user-secrets set "AdminBootstrap:Username" "claim-admin"
+dotnet user-secrets set "AdminBootstrap:Password" "<a unique password of at least 12 characters>"
+dotnet ef database update
+dotnet run --launch-profile https
+```
+
+In Azure, configure these values as App Service settings/Key Vault references. Run `dotnet ef database update` as a deployment step before starting the API so the `Account` table exists. The administrator is created once if the configured username is not already in the table; changing its password later requires a deliberate credential rotation.
 
 ## Start the application on Windows
 

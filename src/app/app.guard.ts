@@ -1,21 +1,59 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, CanDeactivateFn, Router } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './auth.service';
+
+export const authenticatedGuard: CanActivateFn = (_route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isAuthenticated()) {
+    return true;
+  }
+
+  return router.createUrlTree(['/login'], {
+    queryParams: { returnUrl: state.url }
+  });
+};
+
+export const signedOutGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (!authService.isAuthenticated()) {
+    return true;
+  }
+
+  return router.createUrlTree([authService.isAdmin() ? '/review' : '/intake']);
+};
 
 export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isAdmin()) {
+  if (authService.isAuthenticated() && authService.isAdmin()) {
     return true;
   }
 
-  return router.createUrlTree(['/admin-login'], {
+  if (authService.isAuthenticated()) {
+    return router.createUrlTree(['/admin-login'], {
+      queryParams: { returnUrl: state.url }
+    });
+  }
+
+  return router.createUrlTree(['/login'], {
     queryParams: { returnUrl: state.url }
   });
 };
 
-export const adminReviewExitGuard: CanDeactivateFn<unknown> = () => {
-  inject(AuthService).logout();
-  return true;
+export const adminLoginGuard: CanActivateFn = (_route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (!authService.isAuthenticated()) {
+    return router.createUrlTree(['/login'], {
+      queryParams: { returnUrl: state.url }
+    });
+  }
+
+  return authService.isAdmin() ? router.createUrlTree(['/review']) : true;
 };

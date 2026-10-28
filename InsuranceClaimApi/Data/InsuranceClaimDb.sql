@@ -7,6 +7,31 @@ GO
 
 --- Tables ---
 
+IF OBJECT_ID(N'dbo.Account', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.Account(
+        Id int primary key identity(1,1),
+        Username nvarchar(50) not null,
+        NormalizedUsername nvarchar(50) not null,
+        PasswordHash nvarchar(max) not null,
+        IsAdmin bit not null default 0,
+        CreatedAt datetime2 not null
+    );
+    CREATE UNIQUE INDEX IX_Account_NormalizedUsername
+        ON dbo.Account(NormalizedUsername);
+END;
+
+IF COL_LENGTH(N'dbo.Account', N'IsAdmin') IS NULL
+BEGIN
+    ALTER TABLE dbo.Account ADD IsAdmin bit NOT NULL
+        CONSTRAINT DF_Account_IsAdmin DEFAULT 0;
+    IF COL_LENGTH(N'dbo.Account', N'Role') IS NOT NULL
+    BEGIN
+        EXEC(N'UPDATE dbo.Account SET IsAdmin = CASE WHEN Role = N''Admin'' THEN 1 ELSE 0 END');
+        ALTER TABLE dbo.Account DROP COLUMN Role;
+    END;
+END;
+
 IF OBJECT_ID(N'dbo.Client', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Client(
@@ -164,6 +189,4 @@ SELECT
 FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_TYPE = 'BASE TABLE'
 ORDER BY TABLE_SCHEMA, TABLE_NAME;
-
-
 

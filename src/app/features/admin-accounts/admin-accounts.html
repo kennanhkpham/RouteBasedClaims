@@ -1,0 +1,66 @@
+<section class="accounts-page" aria-labelledby="accounts-title">
+  <div class="page-heading">
+    <p class="eyebrow">ADMINISTRATOR TOOLS</p>
+    <h1 id="accounts-title">Create an account</h1>
+    <p class="intro">Create a claimant account or grant administrator access to a trusted reviewer.</p>
+  </div>
+
+  <form class="account-card" (ngSubmit)="createAccount()">
+    <label for="username">Username</label>
+    <input
+      id="username"
+      name="username"
+      autocomplete="username"
+      minlength="3"
+      maxlength="50"
+      pattern="[A-Za-z0-9._-]+"
+      required
+      [ngModel]="username()"
+      (ngModelChange)="username.set($event)">
+
+    <label for="password">Temporary password</label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      autocomplete="new-password"
+      minlength="12"
+      maxlength="128"
+      required
+      [ngModel]="password()"
+      (ngModelChange)="password.set($event)">
+
+    <label for="confirm-password">Confirm password</label>
+    <input
+      id="confirm-password"
+      name="confirmPassword"
+      type="password"
+      autocomplete="new-password"
+      minlength="12"
+      maxlength="128"
+      required
+      [ngModel]="confirmPassword()"
+      (ngModelChange)="confirmPassword.set($event)">
+
+    <label class="admin-option" for="is-admin">
+      <input
+        id="is-admin"
+        name="isAdmin"
+        type="checkbox"
+        [ngModel]="isAdmin()"
+        (ngModelChange)="isAdmin.set($event)">
+      Grant administrator access
+    </label>
+
+    @if (errorMessage()) {
+      <p class="alert" role="alert">{{ errorMessage() }}</p>
+    }
+    @if (successMessage()) {
+      <p class="success" role="status">{{ successMessage() }}</p>
+    }
+
+    <button type="submit" [disabled]="isLoading()">
+      {{ isLoading() ? 'Creating account…' : 'Create account' }}
+    </button>
+  </form>
+</section>

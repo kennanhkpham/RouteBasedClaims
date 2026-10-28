@@ -1,0 +1,36 @@
+<section class="login-page" aria-labelledby="admin-login-title">
+  <div class="page-heading">
+    <p class="eyebrow">SEPARATE ADMIN ACCESS</p>
+    <h1 id="admin-login-title">Claim review sign in</h1>
+    <p class="intro">Enter your administrator account to review and update claims.</p>
+  </div>
+
+  <form class="login-card" (ngSubmit)="signIn()">
+    <label for="admin-username">Administrator username</label>
+    <input
+      id="admin-username"
+      name="username"
+      autocomplete="username"
+      required
+      [ngModel]="username()"
+      (ngModelChange)="username.set($event)">
+
+    <label for="admin-password">Administrator password</label>
+    <input
+      id="admin-password"
+      name="password"
+      type="password"
+      autocomplete="current-password"
+      required
+      [ngModel]="password()"
+      (ngModelChange)="password.set($event)">
+
+    @if (errorMessage()) {
+      <p class="alert" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <button type="submit" [disabled]="isLoading()">
+      {{ isLoading() ? 'Verifying administrator…' : 'Continue to claim review' }}
+    </button>
+  </form>
+</section>

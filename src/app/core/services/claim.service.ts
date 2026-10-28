@@ -2,13 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Claim, CreateClaimRequest } from '../models/Claim.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClaimService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://route-claims-api-kennan-endwesajfhaxe8gj.westcentralus-01.azurewebsites.net/api/claims';
+  private readonly apiUrl = `${environment.apiUrl}/claims`;
 
   submitClaim(data: CreateClaimRequest): Observable<Claim> {
     return this.http.post<Claim>(this.apiUrl, data);

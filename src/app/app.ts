@@ -13,7 +13,16 @@ export class App {
   private readonly router = inject(Router);
 
   logout(): void {
+    if (!globalThis.confirm('Are you sure you want to sign out?')) {
+      return;
+    }
+
     this.authService.logout();
+    void this.router.navigate(['/login']);
+  }
+
+  exitAdminReview(): void {
+    this.authService.logoutAdmin();
     void this.router.navigate(['/intake']);
   }
 }

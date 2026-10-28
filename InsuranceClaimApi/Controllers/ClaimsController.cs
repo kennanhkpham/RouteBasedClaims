@@ -9,6 +9,7 @@ namespace InsuranceClaimApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ClaimsController : ControllerBase
 {
     private readonly AppDbContext _context;

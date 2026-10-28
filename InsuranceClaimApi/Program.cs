@@ -7,6 +7,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Security.Claims;
+using InsuranceClaimApi.Models;
+using Microsoft.AspNetCore.Identity;
+using InsuranceClaimApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +35,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Controllers
 builder.Services.AddControllers();
+builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
+builder.Services.AddHostedService<AdminBootstrapService>();
+var jwtSigningKey = builder.Configuration["Jwt:SigningKey"] ?? string.Empty;
 
 // JWT authentication and validation
 builder.Services
@@ -47,8 +53,8 @@ builder.Services
             ValidAudience = AuthController.TokenAudience,
 
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(AuthController.SigningKey)),
+            IssuerSigningKeyResolver = (_, _, _, _) =>
+                [new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSigningKey))],
 
             ValidateLifetime = true,
             ClockSkew = TimeSpan.FromSeconds(30),
@@ -130,22 +136,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
-
-// Temporary diagnostic endpoint
-// Remove after troubleshooting is complete.
-app.MapGet("/debug/auth-check", () =>
-{
-    return Results.Ok(new
-    {
-        Environment = app.Environment.EnvironmentName,
-        JwtIssuerConfigured =
-            !string.IsNullOrWhiteSpace(AuthController.TokenIssuer),
-        JwtAudienceConfigured =
-            !string.IsNullOrWhiteSpace(AuthController.TokenAudience),
-        JwtSigningKeyConfigured =
-            !string.IsNullOrWhiteSpace(AuthController.SigningKey)
-    });
-}).AllowAnonymous();
 
 // Swagger
 app.UseSwagger();
