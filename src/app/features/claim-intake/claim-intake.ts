@@ -1,5 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  ElementRef,
+  inject,
+  Injector,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Claim } from '../../core/models/Claim.model';
 import { ClaimService } from '../../core/services/claim.service';
@@ -13,10 +21,19 @@ import { ClaimService } from '../../core/services/claim.service';
 export class ClaimIntakeComponent {
   private readonly formBuilder = inject(NonNullableFormBuilder);
   private readonly claimService = inject(ClaimService);
+  private readonly injector = inject(Injector);
 
+  readonly steps = [
+    'Claim details',
+    'Client information',
+    'Prescription details',
+    'Review & submit',
+  ];
+  readonly currentStep = signal(0);
   readonly isSaving = signal(false);
   readonly errorMessage = signal('');
   readonly submittedClaim = signal<Claim | null>(null);
+  readonly stepHeading = viewChild<ElementRef<HTMLHeadingElement>>('stepHeading');
 
   readonly claimForm = this.formBuilder.group({
     policyNumber: ['', [Validators.required, Validators.maxLength(40)]],
@@ -31,12 +48,57 @@ export class ClaimIntakeComponent {
     }),
   });
 
+  nextStep(): void {
+    if (this.currentStep() >= this.steps.length - 1 || !this.validateStep(this.currentStep())) {
+      return;
+    }
+
+    this.errorMessage.set('');
+    this.currentStep.update((step) => step + 1);
+    this.focusStepHeading();
+  }
+
+  previousStep(): void {
+    if (this.isSaving() || this.currentStep() === 0) {
+      return;
+    }
+
+    this.errorMessage.set('');
+    this.currentStep.update((step) => step - 1);
+    this.focusStepHeading();
+  }
+
+  goToStep(step: number): void {
+    if (this.isSaving() || step < 0 || step >= this.steps.length - 1) {
+      return;
+    }
+
+    this.errorMessage.set('');
+    this.currentStep.set(step);
+    this.focusStepHeading();
+  }
+
   onSubmit(): void {
+    if (this.currentStep() < this.steps.length - 1) {
+      this.nextStep();
+      return;
+    }
+
+    if (this.isSaving()) {
+      return;
+    }
+
     this.errorMessage.set('');
     this.submittedClaim.set(null);
 
     if (this.claimForm.invalid) {
-      this.claimForm.markAllAsTouched();
+      const firstInvalidStep = this.steps
+        .slice(0, -1)
+        .findIndex((_, index) => !this.isStepValid(index));
+      const step = firstInvalidStep === -1 ? 0 : firstInvalidStep;
+      this.currentStep.set(step);
+      this.validateStep(step);
+      this.focusStepHeading();
       return;
     }
 
@@ -45,6 +107,7 @@ export class ClaimIntakeComponent {
       next: (claim) => {
         this.submittedClaim.set(claim);
         this.claimForm.reset();
+        this.currentStep.set(0);
         this.isSaving.set(false);
       },
       error: (error: unknown) => {
@@ -55,6 +118,41 @@ export class ClaimIntakeComponent {
         );
         this.isSaving.set(false);
       },
+    });
+  }
+
+  private validateStep(step: number): boolean {
+    const controls = this.getStepControls(step);
+    controls.forEach((control) => control.markAsTouched());
+    return controls.every((control) => control.valid);
+  }
+
+  private isStepValid(step: number): boolean {
+    return this.getStepControls(step).every((control) => control.valid);
+  }
+
+  private getStepControls(step: number) {
+    switch (step) {
+      case 0:
+        return [
+          this.claimForm.controls.policyNumber,
+          this.claimForm.controls.amountCost,
+        ];
+      case 1:
+        return [
+          this.claimForm.controls.fullName,
+          this.claimForm.controls.email,
+        ];
+      case 2:
+        return Object.values(this.claimForm.controls.prescriptionDetail.controls);
+      default:
+        return [];
+    }
+  }
+
+  private focusStepHeading(): void {
+    afterNextRender(() => this.stepHeading()?.nativeElement.focus(), {
+      injector: this.injector,
     });
   }
 }
