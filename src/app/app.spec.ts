@@ -31,6 +31,38 @@ describe('App', () => {
     expect(compiled.querySelector('nav')).toBeNull();
   });
 
+  it('shows admin workflows and moves exit-admin action to the header', () => {
+    const fixture = TestBed.createComponent(App);
+    const authService = TestBed.inject(AuthService);
+    vi.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
+    vi.spyOn(authService, 'isAdmin').mockReturnValue(true);
+
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const navigation = compiled.querySelector('nav[aria-label="Main navigation"]');
+    expect(navigation?.textContent).toContain('Claim Review');
+    expect(navigation?.textContent).toContain('Manage Accounts');
+    expect(navigation?.textContent).not.toContain('New Claim');
+    expect(navigation?.textContent).not.toContain('Check Status');
+    expect(compiled.querySelector('.header-actions')?.textContent).toContain('Exit admin view');
+  });
+
+  it('keeps claimant navigation focused on claimant actions', () => {
+    const fixture = TestBed.createComponent(App);
+    const authService = TestBed.inject(AuthService);
+    vi.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
+    vi.spyOn(authService, 'isAdmin').mockReturnValue(false);
+
+    fixture.detectChanges();
+
+    const navigation = (fixture.nativeElement as HTMLElement)
+      .querySelector('nav[aria-label="Main navigation"]');
+    expect(navigation?.textContent).toContain('New Claim');
+    expect(navigation?.textContent).toContain('Check Status');
+    expect(navigation?.textContent).toContain('Claim Review');
+  });
+
   it('keeps the session active when sign out is cancelled', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;

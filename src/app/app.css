@@ -6,23 +6,22 @@
 .site-header {
   align-items: center;
   background: #fff;
+  border-bottom: 1px solid #e0e8e5;
   display: flex;
   justify-content: space-between;
-  min-height: 10px;
+  min-height: 5rem;
   padding: 0 clamp(1rem, 6vw, 5rem);
-  justify-content: center;
 }
 
 .brand {
   align-items: center;
   color: #173d38;
   display: flex;
-  font-size: 3rem;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
   font-weight: 750;
-  gap: 1.0rem;
+  gap: 0.75rem;
   text-decoration: none;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  white-space: nowrap;
 }
 
 .brand-mark {
@@ -51,43 +50,65 @@
 
 .primary-nav {
   display: flex;
-  gap: 5rem;
-  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  background-color: white;
+  gap: 0.35rem;
+  min-height: 4rem;
+}
+
+.header-actions {
+  align-items: center;
+  display: flex;
+  gap: 0.55rem;
 }
 
 .primary-nav a,
-.primary-nav button {
+.header-actions button {
   border-radius: 0.5rem;
   color: #425752;
   font-size: 0.93rem;
   font-weight: 650;
-  padding: 1rem 0.9rem;
-  margin: 0.5rem 0.45rem;
+  padding: 0.65rem 0.9rem;
   text-decoration: none;
 }
 
 .primary-nav a:hover,
-.primary-nav a.active,
-.primary-nav button:hover {
+.header-actions button:hover {
   background: #eaf4f1;
   color: #0e5f4c;
 }
 
+.primary-nav a.active {
+  background: #eaf4f1;
+  box-shadow: inset 0 0 0 1px #b7d8ce;
+  color: #0e5f4c;
+}
+
 .primary-nav a:focus-visible,
-.primary-nav button:focus-visible,
+.header-actions button:focus-visible,
 .brand:focus-visible {
   outline: 3px solid #16745f;
   outline-offset: 3px;
 }
 
-.primary-nav button {
+.header-actions button {
   background: transparent;
-  border: 0;
   cursor: pointer;
   font-family: inherit;
+}
+
+.exit-admin {
+  border: 1px solid #b9c9c3;
+}
+
+.sign-out {
+  border: 1px solid transparent;
+}
+
+.nav-container {
+  background: #fff;
+  border-bottom: 1px solid #dfe8e4;
+  box-shadow: 0 3px 12px rgb(23 61 56 / 3%);
+  padding: 0 clamp(1rem, 6vw, 5rem);
 }
 
 .page-content {
@@ -98,20 +119,52 @@
 
 @media (max-width: 520px) {
   .site-header {
-    align-items: center;
-    flex-direction: column;
-    gap: 2rem;
-    padding-bottom: 0.85rem;
-    padding-top: 0.85rem;
+    gap: 0.75rem;
+    min-height: 4.25rem;
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .brand {
+    font-size: 1rem;
+    white-space: normal;
+  }
+
+  .brand-mark {
+    flex-basis: 2.5rem;
+    height: 2.5rem;
+    width: 2.5rem;
   }
 
   .primary-nav {
-    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-height: 3.5rem;
   }
 
   .primary-nav a,
-  .primary-nav button {
-    flex: 4;
+  .header-actions button {
+    font-size: 0.82rem;
+    padding: 0.55rem 0.6rem;
+  }
+
+  .header-actions {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 380px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .header-actions {
+    align-self: flex-end;
+  }
+
+  .primary-nav a {
+    flex: 1 1 auto;
     text-align: center;
   }
 }

@@ -1,6 +1,12 @@
 <section class="login-page" aria-labelledby="login-title">
   <div class="page-heading">
-    <p class="eyebrow">{{ isRegistering() ? 'CLAIMSTREAM ACCOUNT' : 'SECURE ACCOUNT ACCESS' }}</p>
+    <svg class="welcome-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2.75 20 6v5.1c0 5.1-3.35 8.3-8 10.15-4.65-1.85-8-5.05-8-10.15V6l8-3.25Z"
+        stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+      <path d="m8.5 12 2.25 2.25 4.75-4.75"
+        stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <p class="eyebrow">Welcome to ClaimStream WorkComp</p>
     <h1 id="login-title">{{ isRegistering() ? 'Create your account' : 'Sign in' }}</h1>
     <p class="intro">
       {{ isRegistering()
@@ -20,26 +26,47 @@
       pattern="[A-Za-z0-9._-]+"
       required
       [ngModel]="username()"
-      (ngModelChange)="username.set($event)">
+      (ngModelChange)="onUsernameChange($event)">
 
     <label for="password">Password</label>
-    <input
-      id="password"
-      name="password"
-      type="password"
-      [attr.autocomplete]="isRegistering() ? 'new-password' : 'current-password'"
-      [attr.minlength]="isRegistering() ? 12 : 1"
-      maxlength="128"
-      required
-      [ngModel]="password()"
-      (ngModelChange)="password.set($event)">
+    <div class="password-input">
+      <input
+        id="password"
+        name="password"
+        [type]="isPasswordVisible() ? 'text' : 'password'"
+        [attr.autocomplete]="isRegistering() ? 'new-password' : 'current-password'"
+        [attr.minlength]="isRegistering() ? 12 : 1"
+        maxlength="128"
+        required
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)">
+      <button
+        class="visibility-button"
+        type="button"
+        [attr.aria-label]="isPasswordVisible() ? 'Hide password' : 'Show password'"
+        [attr.aria-pressed]="isPasswordVisible()"
+        (click)="togglePasswordVisibility()">
+        @if (isPasswordVisible()) {
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 3 21 21M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10.7 10.7 0 0 1 12 5c5.5 0 9 7 9 7a14 14 0 0 1-3.1 3.8M6.2 6.3C3.9 8 3 12 3 12s3.5 7 9 7a9.7 9.7 0 0 0 4.1-.9"
+              stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        } @else {
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 12s3.5-7 9-7 9 7 9 7-3.5 7-9 7-9-7-9-7Z"
+              stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+            <circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.7" />
+          </svg>
+        }
+      </button>
+    </div>
 
     @if (isRegistering()) {
       <label for="confirm-password">Confirm password</label>
       <input
         id="confirm-password"
         name="confirmPassword"
-        type="password"
+        [type]="isPasswordVisible() ? 'text' : 'password'"
         autocomplete="new-password"
         minlength="12"
         maxlength="128"
@@ -48,14 +75,27 @@
         (ngModelChange)="confirmPassword.set($event)">
     }
 
+    <label class="remember-option" for="remember-username">
+      <input
+        id="remember-username"
+        name="rememberUsername"
+        type="checkbox"
+        [checked]="rememberUsername()"
+        (change)="onRememberUsernameChange($event)">
+      <span>Remember username on this device</span>
+    </label>
+
     @if (errorMessage()) {
       <p class="alert" role="alert">{{ errorMessage() }}</p>
     }
 
-    <button type="submit" [disabled]="isLoading()">
-      {{ isLoading()
+    <button class="submit-button" type="submit" [disabled]="isLoading()" [attr.aria-busy]="isLoading()">
+      @if (isLoading()) {
+        <span class="loading-spinner" aria-hidden="true"></span>
+      }
+      <span>{{ isLoading()
         ? (isRegistering() ? 'Creating account…' : 'Signing in…')
-        : (isRegistering() ? 'Create account' : 'Sign in') }}
+        : (isRegistering() ? 'Create account' : 'Sign in') }}</span>
     </button>
     <button
       class="mode-button"

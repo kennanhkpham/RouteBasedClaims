@@ -1,6 +1,9 @@
 @if (authService.isAuthenticated()) {
   <header class="site-header">
-    <a class="brand" routerLink="/intake" aria-label="Route-Based Insurance">
+    <a
+      class="brand"
+      [routerLink]="authService.isAdmin() ? '/review' : '/intake'"
+      aria-label="Route-Based Insurance">
       <span class="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2.75 20 6v5.1c0 5.1-3.35 8.3-8 10.15-4.65-1.85-8-5.05-8-10.15V6l8-3.25Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
@@ -9,18 +12,26 @@
       </span>
       <span>ClaimStream WorkComp</span>
     </a>
+    <div class="header-actions" aria-label="Account actions">
+      @if (authService.isAdmin()) {
+        <button type="button" class="exit-admin" (click)="exitAdminReview()">Exit admin view</button>
+      }
+      <button type="button" class="sign-out" (click)="logout()">Sign out</button>
+    </div>
   </header>
 
-  <nav class="primary-nav" aria-label="Main navigation">
-    <a routerLink="/intake" routerLinkActive="active" ariaCurrentWhenActive="page">New Claim</a>
-    <a routerLink="/status" routerLinkActive="active" ariaCurrentWhenActive="page">Check Status</a>
-    <a routerLink="/review" routerLinkActive="active" ariaCurrentWhenActive="page">Claim Review</a>
-    @if (authService.isAdmin()) {
-      <a routerLink="/admin/accounts" routerLinkActive="active" ariaCurrentWhenActive="page">Manage Accounts</a>
-      <button type="button" class="nav-account" (click)="exitAdminReview()">Exit admin review</button>
-    }
-    <button type="button" class="nav-account" (click)="logout()">Sign out</button>
-  </nav>
+  <div class="nav-container">
+    <nav class="primary-nav" aria-label="Main navigation">
+      @if (authService.isAdmin()) {
+        <a routerLink="/review" routerLinkActive="active" ariaCurrentWhenActive="page">Claim Review</a>
+        <a routerLink="/admin/accounts" routerLinkActive="active" ariaCurrentWhenActive="page">Manage Accounts</a>
+      } @else {
+        <a routerLink="/intake" routerLinkActive="active" ariaCurrentWhenActive="page">New Claim</a>
+        <a routerLink="/status" routerLinkActive="active" ariaCurrentWhenActive="page">Check Status</a>
+        <a routerLink="/review" routerLinkActive="active" ariaCurrentWhenActive="page">Claim Review</a>
+      }
+    </nav>
+  </div>
 }
 
 <main class="page-content">

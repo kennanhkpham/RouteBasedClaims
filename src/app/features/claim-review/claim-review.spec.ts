@@ -43,6 +43,41 @@ describe('ClaimReviewerComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('filters pending claims and searches across claim details', () => {
+    component.claims.set([
+      claim,
+      {
+        ...claim,
+        claimId: 2,
+        claimNumber: 'CLM-456',
+        fullName: 'Jamie Rivera',
+        status: 'Approved',
+        prescriptionDetail: {
+          ...claim.prescriptionDetail,
+          medicationName: 'Other medication',
+        },
+      },
+    ]);
+
+    expect(component.pendingCount()).toBe(1);
+    expect(component.filteredClaims()).toHaveLength(2);
+
+    component.setStatusFilter('pending');
+    expect(component.filteredClaims().map((item) => item.claimNumber)).toEqual(['CLM-123']);
+
+    component.setStatusFilter('all');
+    component.searchQuery.set('other medication');
+    expect(component.filteredClaims().map((item) => item.claimNumber)).toEqual(['CLM-456']);
+  });
+
+  it('assigns a scan-friendly badge class to each status category', () => {
+    expect(component.statusBadgeClass('Approved')).toBe('status-approved');
+    expect(component.statusBadgeClass('Rejected')).toBe('status-rejected');
+    expect(component.statusBadgeClass('Inactive')).toBe('status-inactive');
+    expect(component.statusBadgeClass('Pending Authorization')).toBe('status-pending');
+    expect(component.statusBadgeClass('Submitted')).toBe('status-pending');
+  });
+
   it('updates a claim status and reflects the saved status', () => {
     component.statusEdits.set({ 1: 'Approved' });
 

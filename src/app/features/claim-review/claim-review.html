@@ -40,11 +40,44 @@
     </div>
   </div>
 
+  <div class="claim-tools">
+    <div class="status-filters" role="group" aria-label="Filter claims by status">
+      <button
+        type="button"
+        class="filter-button"
+        [class.filter-active]="statusFilter() === 'all'"
+        [attr.aria-pressed]="statusFilter() === 'all'"
+        (click)="setStatusFilter('all')">
+        All ({{ claims().length }})
+      </button>
+      <button
+        type="button"
+        class="filter-button"
+        [class.filter-active]="statusFilter() === 'pending'"
+        [attr.aria-pressed]="statusFilter() === 'pending'"
+        (click)="setStatusFilter('pending')">
+        Pending ({{ pendingCount() }})
+      </button>
+    </div>
+    <div class="search-field">
+      <label for="claim-search">Search claims</label>
+      <input
+        id="claim-search"
+        type="search"
+        autocomplete="off"
+        placeholder="Claim, client, policy, or medication"
+        [value]="searchQuery()"
+        (input)="setSearchQuery($event)">
+    </div>
+  </div>
+
   @if (isLoading() && claims().length === 0) {
     <p class="empty-state" role="status">Loading claims…</p>
   } @else if (claims().length === 0 && !errorMessage()) {
     <p class="empty-state">There are no claims to review yet.</p>
-  } @else if (claims().length > 0) {
+  } @else if (filteredClaims().length === 0 && claims().length > 0) {
+    <p class="empty-state" role="status">No claims match the current search and filter.</p>
+  } @else if (filteredClaims().length > 0) {
     <div class="table-scroll">
       <table>
         <thead>
@@ -59,7 +92,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (claim of claims(); track claim.claimId ?? claim.claimNumber ?? claim.fullName) {
+          @for (claim of filteredClaims(); track claim.claimId ?? claim.claimNumber ?? claim.fullName) {
             <tr>
               <td>
                 <span class="claim-number">{{ claim.claimNumber ?? 'Claim number unavailable' }}</span>
@@ -92,11 +125,9 @@
                     }
                   </select>
                   <span
-                    class="current-status"
-                    [class.status-approved]="claim.status === 'Approved'"
-                    [class.status-rejected]="claim.status === 'Rejected'"
+                    [class]="'status-badge ' + statusBadgeClass(claim.status)"
                     [id]="'current-status-' + (claim.claimId ?? claim.claimNumber)">
-                    Current: {{ claim.status ?? 'Submitted' }}
+                    {{ claim.status ?? 'Submitted' }}
                   </span>
                   <button
                     class="save-button"

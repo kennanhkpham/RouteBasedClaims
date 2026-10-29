@@ -77,7 +77,6 @@ button:disabled {
   background: #fff;
   border: 1px solid #e0e8e5;
   border-radius: 0.85rem;
-  box-shadow: 0 10px 26px rgb(23 61 56 / 5%);
 }
 
 .summary-card {
@@ -87,8 +86,7 @@ button:disabled {
 }
 
 .summary-label,
-.secondary-text,
-.current-status {
+.secondary-text {
   color: #526660;
   font-size: 0.82rem;
 }
@@ -118,8 +116,67 @@ button:disabled {
   margin-top: 0.25rem;
 }
 
+.claim-tools {
+  align-items: flex-end;
+  border-bottom: 1px solid #e7edeb;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem 1.4rem;
+}
+
+.status-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.filter-button {
+  background: #f2f6f4;
+  color: #425752;
+}
+
+.filter-button:hover:not(:disabled) {
+  background: #e4efea;
+}
+
+.filter-button.filter-active {
+  background: #eaf4f1;
+  box-shadow: inset 0 0 0 1px #b7d8ce;
+  color: #0e5f4c;
+}
+
+.search-field {
+  display: grid;
+  gap: 0.3rem;
+  max-width: 24rem;
+  width: 100%;
+}
+
+.search-field label {
+  color: #314b44;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.search-field input {
+  border: 1px solid #b9c9c3;
+  border-radius: 0.45rem;
+  color: #1d302c;
+  min-height: 2.5rem;
+  padding: 0.45rem 0.65rem;
+  width: 100%;
+}
+
+.search-field input:focus-visible {
+  outline: 3px solid #14735e;
+  outline-offset: 2px;
+}
+
 .table-scroll {
-  overflow-x: auto;
+  max-height: min(68vh, 680px);
+  overflow: auto;
 }
 
 table {
@@ -140,9 +197,11 @@ th {
   background: #f7faf9;
   color: #526660;
   font-size: 0.76rem;
-  letter-spacing: 0.045em;
+  position: sticky;
+  top: 0;
   text-transform: uppercase;
   white-space: nowrap;
+  z-index: 1;
 }
 
 tbody tr:last-child td {
@@ -189,11 +248,32 @@ select {
 }
 
 .status-approved {
-  color: #1b684e;
+  background: #e5f4eb;
+  color: #195d3d;
 }
 
 .status-rejected {
-  color: #9c3030;
+  background: #fff0ef;
+  color: #842222;
+}
+
+.status-pending {
+  background: #fff4d9;
+  color: #70500a;
+}
+
+.status-inactive {
+  background: #edf2f0;
+  color: #425752;
+}
+
+.status-badge {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.3;
+  padding: 0.35rem 0.65rem;
 }
 
 .save-button {
@@ -257,7 +337,16 @@ select {
   }
 
   .summary-card,
-  .table-heading {
+  .table-heading,
+  .claim-tools {
     padding: 0.9rem;
+  }
+
+  .claim-tools {
+    align-items: stretch;
+  }
+
+  .search-field {
+    max-width: none;
   }
 }

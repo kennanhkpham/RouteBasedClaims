@@ -25,6 +25,8 @@ export class ClaimReviewerComponent {
   readonly statuses = CLAIM_STATUSES;
   readonly claims = signal<Claim[]>([]);
   readonly statusEdits = signal<Record<number, string>>({});
+  readonly searchQuery = signal('');
+  readonly statusFilter = signal<'all' | 'pending'>('all');
   readonly isLoading = signal(false);
   readonly updatingClaimId = signal<number | null>(null);
   readonly deletingClaimNumber = signal<string | null>(null);
@@ -36,6 +38,30 @@ export class ClaimReviewerComponent {
       !['Approved', 'Rejected', 'Inactive'].includes(claim.status ?? 'Submitted'),
     ).length,
   );
+
+  readonly filteredClaims = computed(() => {
+    const query = this.searchQuery().trim().toLocaleLowerCase();
+    const claims = this.statusFilter() === 'pending'
+      ? this.claims().filter((claim) =>
+        !['Approved', 'Rejected', 'Inactive'].includes(claim.status ?? 'Submitted'),
+      )
+      : this.claims();
+
+    if (!query) {
+      return claims;
+    }
+
+    return claims.filter((claim) => [
+      claim.claimNumber,
+      claim.policyNumber,
+      claim.fullName,
+      claim.email,
+      claim.prescriptionDetail.medicationName,
+      claim.prescriptionDetail.prescriptionNumber,
+      claim.prescriptionDetail.doctorName,
+      claim.status,
+    ].some((value) => value?.toLocaleLowerCase().includes(query)));
+  });
 
   constructor() {
     this.loadClaims();
@@ -63,6 +89,30 @@ export class ClaimReviewerComponent {
     return claim.claimId === undefined
       ? claim.status ?? 'Submitted'
       : this.statusEdits()[claim.claimId] ?? claim.status ?? 'Submitted';
+  }
+
+  setSearchQuery(event: Event): void {
+    const target = event.target;
+    if (target instanceof HTMLInputElement) {
+      this.searchQuery.set(target.value);
+    }
+  }
+
+  setStatusFilter(filter: 'all' | 'pending'): void {
+    this.statusFilter.set(filter);
+  }
+
+  statusBadgeClass(status: string | undefined): string {
+    if (status === 'Approved') {
+      return 'status-approved';
+    }
+    if (status === 'Rejected') {
+      return 'status-rejected';
+    }
+    if (status === 'Inactive') {
+      return 'status-inactive';
+    }
+    return 'status-pending';
   }
 
   onStatusSelection(claim: Claim, event: Event): void {

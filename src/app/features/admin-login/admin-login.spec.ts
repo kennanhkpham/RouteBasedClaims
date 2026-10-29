@@ -11,6 +11,7 @@ describe('AdminLoginComponent', () => {
   let navigateByUrl: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
+    localStorage.removeItem('claimstream-remembered-username');
     navigateByUrl = vi.fn().mockResolvedValue(true);
     await TestBed.configureTestingModule({
       imports: [AdminLoginComponent],
@@ -34,7 +35,77 @@ describe('AdminLoginComponent', () => {
 
   afterEach(() => {
     authService.logout();
+    localStorage.removeItem('claimstream-remembered-username');
     httpTestingController.verify();
+  });
+
+  it('welcomes users to ClaimStream WorkComp', () => {
+    const fixture = TestBed.createComponent(AdminLoginComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Welcome to ClaimStream WorkComp');
+    expect(fixture.nativeElement.querySelector('.welcome-icon')).toBeTruthy();
+  });
+
+  it('toggles password visibility accessibly', () => {
+    const fixture = TestBed.createComponent(AdminLoginComponent);
+    fixture.detectChanges();
+
+    const passwordInput = fixture.nativeElement.querySelector('#password') as HTMLInputElement;
+    const visibilityButton = fixture.nativeElement.querySelector('.visibility-button') as HTMLButtonElement;
+    expect(passwordInput.type).toBe('password');
+    expect(visibilityButton.getAttribute('aria-label')).toBe('Show password');
+
+    visibilityButton.click();
+    fixture.detectChanges();
+
+    expect(passwordInput.type).toBe('text');
+    expect(visibilityButton.getAttribute('aria-label')).toBe('Hide password');
+    expect(visibilityButton.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('remembers only the username when requested', () => {
+    const fixture = TestBed.createComponent(AdminLoginComponent);
+    const component = fixture.componentInstance;
+    component.username.set('returning.claimant');
+    component.password.set('private-password');
+    component.rememberUsername.set(true);
+
+    component.submit();
+
+    const request = httpTestingController.expectOne(
+      'https://localhost:7197/api/auth/login',
+    );
+    request.flush({
+      token: 'claimant-session-token',
+      expiresAt: new Date(Date.now() + 60_000).toISOString(),
+      role: 'Claimant',
+    });
+
+    expect(localStorage.getItem('claimstream-remembered-username')).toBe('returning.claimant');
+    expect(localStorage.getItem('private-password')).toBeNull();
+    expect(sessionStorage.getItem('claimstream-user-session')).toContain('claimant-session-token');
+  });
+
+  it('shows loading feedback while signing in', () => {
+    const fixture = TestBed.createComponent(AdminLoginComponent);
+    const component = fixture.componentInstance;
+    component.username.set('returning.claimant');
+    component.password.set('private-password');
+
+    component.submit();
+    fixture.detectChanges();
+
+    const submitButton = fixture.nativeElement.querySelector('.submit-button') as HTMLButtonElement;
+    expect(submitButton.disabled).toBe(true);
+    expect(submitButton.getAttribute('aria-busy')).toBe('true');
+    expect(submitButton.textContent).toContain('Signing in…');
+    expect(submitButton.querySelector('.loading-spinner')).toBeTruthy();
+
+    httpTestingController.expectOne('https://localhost:7197/api/auth/login').flush(
+      { message: 'Unauthorized' },
+      { status: 401, statusText: 'Unauthorized' },
+    );
   });
 
   it('creates a claimant account and stores its JWT without admin access', () => {

@@ -6,9 +6,27 @@
 <form class="lookup-card" [formGroup]="lookupForm" (ngSubmit)="onSearch()" novalidate>
   <label for="claimNumber">Claim number</label>
   <div class="search-row">
-    <input id="claimNumber" formControlName="claimNumber" autocomplete="off" placeholder="e.g. CLM-A1B2C3D4" required
-      [attr.aria-invalid]="lookupForm.controls.claimNumber.invalid && lookupForm.controls.claimNumber.touched"
-      [attr.aria-describedby]="lookupForm.controls.claimNumber.invalid && lookupForm.controls.claimNumber.touched ? 'claimNumber-error' : null">
+    <div class="input-wrap">
+      <input
+        #claimNumberInput
+        id="claimNumber"
+        formControlName="claimNumber"
+        autocomplete="off"
+        placeholder="e.g. CLM-A1B2C3D4"
+        required
+        [attr.aria-invalid]="lookupForm.controls.claimNumber.invalid && lookupForm.controls.claimNumber.touched"
+        [attr.aria-describedby]="lookupForm.controls.claimNumber.invalid && lookupForm.controls.claimNumber.touched ? 'claimNumber-error' : null">
+      @if (lookupForm.controls.claimNumber.value) {
+        <button
+          class="clear-button"
+          type="button"
+          aria-label="Clear claim number"
+          [disabled]="isSearching()"
+          (click)="clearClaimNumber()">
+          <span aria-hidden="true">×</span>
+        </button>
+      }
+    </div>
     <button type="submit" [disabled]="isSearching()">
       {{ isSearching() ? 'Searching…' : 'Check status' }}
     </button>
@@ -35,6 +53,18 @@
         {{ result.status }}
       </span>
     </div>
+
+    <ol class="status-progress" aria-label="Claim progress">
+      @for (step of progressSteps; track step; let index = $index) {
+        <li
+          [class.progress-complete]="statusStep(result.status) >= index"
+          [class.progress-current]="statusStep(result.status) === index"
+          [attr.aria-current]="statusStep(result.status) === index ? 'step' : null">
+          <span class="progress-marker" aria-hidden="true">{{ index + 1 }}</span>
+          <span>{{ step }}</span>
+        </li>
+      }
+    </ol>
 
     <dl class="claim-details">
       <div>
