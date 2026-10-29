@@ -38,5 +38,5 @@ public class Claim
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // 1-to-1 Relationship with Prescription Detail
-    public PrescriptionDetails PrescriptionDetail { get; set; }
+    public PrescriptionDetails PrescriptionDetail { get; set; } = new();
 }
