@@ -4,21 +4,29 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## Claims portal architecture
 
-The app follows a three-tier flow; the browser never connects directly to SQL Server:
+The app uses an Angular frontend, an Nginx API gateway, and three independently deployable ASP.NET Core services; the browser never connects directly to SQL Server:
 
-1. **UI:** Angular's `/intake` view submits a claim, and `/status` looks one up by claim number.
-2. **Web API:** `InsuranceClaimApi` exposes `POST /api/claims` and `GET /api/claims/{claimNumber}`. Its `ClaimsController` validates and maps the request/response.
-3. **SQL:** The API uses Entity Framework Core and `AppDbContext` to persist claims and prescription details in SQL Server.
+1. **UI and gateway:** Angular's `/intake` and `/status` pages use relative `/api` URLs, which Nginx routes to the backend services.
+2. **AuthService:** owns accounts, hashes passwords, and issues JWTs accepted by ClaimsService.
+3. **ClaimsService:** owns claims and prescription details in `ClaimsDb`; its transactional outbox sends client-profile updates to ClientsService.
+4. **ClientsService:** owns client profiles in `ClientsDb`, validates the shared JWT for Admin-only profile reads, and accepts service-key-protected writes from ClaimsService.
+5. **SQL Server:** hosts separate `AuthDb`, `ClaimsDb`, and `ClientsDb` databases. Services do not access each other's databases.
 
-Configure the API's `DefaultConnection` connection string and ensure its database schema exists before using the claims portal. Start the API with its `https` launch profile (`https://localhost:7197`), then start Angular with `ng serve` (`http://localhost:4200`). Local Angular development uses the local HTTPS API; production builds use the deployed Azure API URL. For local HTTPS, trust the .NET development certificate with `dotnet dev-certs https --trust`.
+`InsuranceClaimApi` remains in the repository as the original reference implementation and is not part of the default MSA gateway.
+
+For the original `InsuranceClaimApi` reference implementation only, configure its `DefaultConnection` connection string and ensure its database schema exists before using the claims portal. Start that API with its `https` launch profile (`https://localhost:7197`), then start Angular with `ng serve` (`http://localhost:4200`). Local Angular development uses the local HTTPS API; production builds use the deployed Azure API URL. For local HTTPS, trust the .NET development certificate with `dotnet dev-certs https --trust`.
+
+### Containerized local development
+
+For the Docker Compose setup, including the Nginx routes, independent database migrations, and the preserved SQL Server volume, see [DOCKER.md](./DOCKER.md). The default stack exposes the frontend at `http://localhost:8082`; microservice ports remain internal to Docker.
 
 ### Sign-in, accounts, and claim review
 
-The app opens on the sign-in page, before displaying the navigation or claim pages. Users can sign in or create a claimant account. New accounts require a 12-character minimum password; passwords are stored as salted, one-way password hashes. Claimant accounts can use claim intake and status pages, but do not have administrator access. The **Claim Review** navigation link prompts for a separate administrator username and password at `/admin-login`. The backend verifies the account's password hash and `IsAdmin` database flag before returning an Admin-role JWT. Successful admin sign-in creates a separate admin session and token without replacing the claimant session. Only an Admin role can access reviewer operations. The API requires a valid JWT for all claim operations and the Admin role for reviewer operations. Use **Sign out** to end both sessions, or **Exit admin review** to return to the claimant app without ending the claimant session.
+The app opens on the sign-in page, before displaying the navigation or claim pages. Users can sign in or create a claimant account. New accounts require a 12-character minimum password; passwords are stored as salted, one-way password hashes. Claimant accounts can use claim intake and status pages, but do not have administrator access. The **Claim Review** navigation link prompts for a separate administrator username and password at `/admin-login`. AuthService verifies the account's password hash and `IsAdmin` database flag before returning an Admin-role JWT. Successful admin sign-in creates a separate admin session and token without replacing the claimant session. Only an Admin role can access reviewer operations. ClaimsService requires a valid JWT for claim operations and the Admin role for reviewer operations. Use **Sign out** to end both sessions, or **Exit admin review** to return to the claimant app without ending the claimant session.
 
-After admin sign-in, **Manage Accounts** opens the protected account-creation page, where an administrator can create claimant accounts or grant administrator access to trusted reviewers. This endpoint requires an Admin JWT; public registration always creates claimant accounts and never accepts an admin flag. The first administrator is provisioned on API startup from `AdminBootstrap:Username` and `AdminBootstrap:Password`. The JWT signing key is read from `Jwt:SigningKey` and must be at least 32 bytes. Never commit these values or put production secrets in application source.
+After admin sign-in, **Manage Accounts** opens the protected account-creation page, where an administrator can create claimant accounts or grant administrator access to trusted reviewers. This endpoint requires an Admin JWT; public registration always creates claimant accounts and never accepts an admin flag. The first administrator is provisioned on AuthService startup from `AdminBootstrap:Username` and `AdminBootstrap:Password`. The same `Jwt:SigningKey` (at least 32 bytes) must be configured for AuthService and ClaimsService. Never commit these values or put production secrets in application source.
 
-For local development, set secrets from the `InsuranceClaimApi` directory (replace the database connection string and admin password with your own values):
+For the original API's local development only, set secrets from the `InsuranceClaimApi` directory (replace the database connection string and admin password with your own values):
 
 ```powershell
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<your SQL Server connection string>"
@@ -34,7 +42,7 @@ dotnet ef database update
 dotnet run --launch-profile https
 ```
 
-In Azure, configure these values as App Service settings/Key Vault references. Run `dotnet ef database update` as a deployment step before starting the API so the `Account` table exists. The administrator is created once if the configured username is not already in the table; changing its password later requires a deliberate credential rotation.
+For a deployment of the original API, configure these values as App Service settings/Key Vault references. Run `dotnet ef database update` as a deployment step before starting it so the `Account` table exists. The administrator is created once if the configured username is not already in the table; changing its password later requires a deliberate credential rotation.
 
 ## Start the application on Windows
 
