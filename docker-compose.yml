@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
 
   auth-migrate:
-    image: routebasedclaims-auth-service:local
+    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/routebasedclaims-auth-service:1.0.0
     build:
       context: .
       dockerfile: Services/AuthService/Dockerfile
@@ -33,7 +33,7 @@ services:
     restart: "no"
 
   claims-migrate:
-    image: routebasedclaims-claims-service:local
+    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/routebasedclaims-claims-service:1.0.0
     build:
       context: .
       dockerfile: Services/ClaimsService/Dockerfile
@@ -46,7 +46,7 @@ services:
     restart: "no"
 
   clients-migrate:
-    image: routebasedclaims-clients-service:local
+    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/routebasedclaims-clients-service:1.0.0
     build:
       context: .
       dockerfile: Services/ClientsService/Dockerfile
@@ -59,7 +59,7 @@ services:
     restart: "no"
 
   auth-service:
-    image: routebasedclaims-auth-service:local
+    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/routebasedclaims-auth-service:1.0.0
     build:
       context: .
       dockerfile: Services/AuthService/Dockerfile
@@ -76,7 +76,7 @@ services:
     restart: unless-stopped
 
   clients-service:
-    image: routebasedclaims-clients-service:local
+    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/routebasedclaims-clients-service:1.0.0
     build:
       context: .
       dockerfile: Services/ClientsService/Dockerfile
@@ -92,7 +92,7 @@ services:
     restart: unless-stopped
 
   claims-service:
-    image: routebasedclaims-claims-service:local
+    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/routebasedclaims-claims-service:1.0.1
     build:
       context: .
       dockerfile: Services/ClaimsService/Dockerfile

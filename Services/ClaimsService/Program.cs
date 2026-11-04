@@ -42,7 +42,13 @@ if (!clientsServiceUri.AbsoluteUri.EndsWith("/", StringComparison.Ordinal))
 }
 
 builder.Services.AddDbContext<ClaimsDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(
+        connectionString,
+        sqlServer => sqlServer.EnableRetryOnFailure(
+            maxRetryCount: 3,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorNumbersToAdd: [-2])));
+builder.Services.AddScoped<IClientProfileOutboxStore, ClientProfileOutboxStore>();
 builder.Services.AddHttpClient("clients-service", client =>
 {
     client.BaseAddress = clientsServiceUri;

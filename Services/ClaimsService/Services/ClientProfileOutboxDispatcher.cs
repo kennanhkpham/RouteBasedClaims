@@ -1,9 +1,8 @@
 using System.Net.Http.Json;
 using System.Text.Json;
-using ClaimsService.Data;
 using ClaimsService.Dtos;
 using ClaimsService.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 
 namespace ClaimsService.Services;
 
@@ -13,38 +12,62 @@ public sealed class ClientProfileOutboxDispatcher(
     ILogger<ClientProfileOutboxDispatcher> logger) : BackgroundService
 {
     private static readonly TimeSpan IdleDelay = TimeSpan.FromSeconds(2);
-    private const int MaximumRetryDelaySeconds = 60;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        var consecutiveDatabaseFailures = 0;
+
         while (!stoppingToken.IsCancellationRequested)
         {
-            var message = await GetNextMessageAsync(stoppingToken);
-            if (message is null)
-            {
-                await Task.Delay(IdleDelay, stoppingToken);
-                continue;
-            }
-
-            var wait = message.NextAttemptAtUtc - DateTime.UtcNow;
-            if (wait > TimeSpan.Zero)
-            {
-                await Task.Delay(wait, stoppingToken);
-                continue;
-            }
-
             try
             {
-                await DeliverAsync(message, stoppingToken);
+                var message = await GetNextMessageAsync(stoppingToken);
+                if (message is null)
+                {
+                    consecutiveDatabaseFailures = 0;
+                    await Task.Delay(IdleDelay, stoppingToken);
+                    continue;
+                }
+
+                var wait = message.NextAttemptAtUtc - DateTime.UtcNow;
+                if (wait > TimeSpan.Zero)
+                {
+                    consecutiveDatabaseFailures = 0;
+                    await Task.Delay(wait, stoppingToken);
+                    continue;
+                }
+
+                try
+                {
+                    await DeliverAsync(message, stoppingToken);
+                }
+                catch (HttpRequestException exception)
+                {
+                    await RecordFailureAsync(message, exception, stoppingToken);
+                    consecutiveDatabaseFailures = 0;
+                    continue;
+                }
+                catch (TaskCanceledException exception) when (!stoppingToken.IsCancellationRequested)
+                {
+                    await RecordFailureAsync(message, exception, stoppingToken);
+                    consecutiveDatabaseFailures = 0;
+                    continue;
+                }
+
                 await MarkProcessedAsync(message.Id, stoppingToken);
+                consecutiveDatabaseFailures = 0;
             }
-            catch (HttpRequestException exception)
+            catch (Exception exception) when (IsTransientDatabaseFailure(exception))
             {
-                await RecordFailureAsync(message, exception, stoppingToken);
-            }
-            catch (TaskCanceledException exception) when (!stoppingToken.IsCancellationRequested)
-            {
-                await RecordFailureAsync(message, exception, stoppingToken);
+                consecutiveDatabaseFailures++;
+                var retryDelay = GetDatabaseRetryDelay(consecutiveDatabaseFailures);
+
+                logger.LogWarning(
+                    exception,
+                    "Transient database failure in the client profile outbox dispatcher; retrying after {RetryDelaySeconds} seconds.",
+                    retryDelay.TotalSeconds);
+
+                await Task.Delay(retryDelay, stoppingToken);
             }
         }
     }
@@ -52,13 +75,8 @@ public sealed class ClientProfileOutboxDispatcher(
     private async Task<OutboxMessage?> GetNextMessageAsync(CancellationToken cancellationToken)
     {
         await using var scope = scopeFactory.CreateAsyncScope();
-        var context = scope.ServiceProvider.GetRequiredService<ClaimsDbContext>();
-
-        return await context.OutboxMessages
-            .AsNoTracking()
-            .Where(message => message.ProcessedAtUtc == null)
-            .OrderBy(message => message.Id)
-            .FirstOrDefaultAsync(cancellationToken);
+        var store = scope.ServiceProvider.GetRequiredService<IClientProfileOutboxStore>();
+        return await store.GetNextMessageAsync(cancellationToken);
     }
 
     private async Task DeliverAsync(OutboxMessage outboxMessage, CancellationToken cancellationToken)
@@ -91,14 +109,8 @@ public sealed class ClientProfileOutboxDispatcher(
     private async Task MarkProcessedAsync(long id, CancellationToken cancellationToken)
     {
         await using var scope = scopeFactory.CreateAsyncScope();
-        var context = scope.ServiceProvider.GetRequiredService<ClaimsDbContext>();
-        var message = await context.OutboxMessages.SingleAsync(
-            item => item.Id == id,
-            cancellationToken);
-
-        message.ProcessedAtUtc = DateTime.UtcNow;
-        message.LastError = null;
-        await context.SaveChangesAsync(cancellationToken);
+        var store = scope.ServiceProvider.GetRequiredService<IClientProfileOutboxStore>();
+        await store.MarkProcessedAsync(id, cancellationToken);
     }
 
     private async Task RecordFailureAsync(
@@ -107,26 +119,42 @@ public sealed class ClientProfileOutboxDispatcher(
         CancellationToken cancellationToken)
     {
         await using var scope = scopeFactory.CreateAsyncScope();
-        var context = scope.ServiceProvider.GetRequiredService<ClaimsDbContext>();
-        var message = await context.OutboxMessages.SingleAsync(
-            item => item.Id == failedMessage.Id,
+        var store = scope.ServiceProvider.GetRequiredService<IClientProfileOutboxStore>();
+        var retry = await store.RecordFailureAsync(
+            failedMessage.Id,
+            exception.Message,
             cancellationToken);
-
-        message.AttemptCount++;
-        message.LastError = exception.Message.Length <= 2048
-            ? exception.Message
-            : exception.Message[..2048];
-        var delaySeconds = Math.Min(
-            MaximumRetryDelaySeconds,
-            Math.Pow(2, Math.Min(message.AttemptCount, 6)));
-        message.NextAttemptAtUtc = DateTime.UtcNow.AddSeconds(delaySeconds);
-        await context.SaveChangesAsync(cancellationToken);
 
         logger.LogError(
             exception,
             "Client profile outbox message {OutboxMessageId} failed on attempt {AttemptCount}; retrying after {RetryDelaySeconds} seconds.",
-            message.Id,
-            message.AttemptCount,
-            delaySeconds);
+            failedMessage.Id,
+            retry.AttemptCount,
+            retry.DelaySeconds);
+    }
+
+    private static TimeSpan GetDatabaseRetryDelay(int failureCount)
+    {
+        var delaySeconds = Math.Min(30, Math.Pow(2, Math.Min(failureCount - 1, 5)));
+        return TimeSpan.FromSeconds(delaySeconds);
+    }
+
+    private static bool IsTransientDatabaseFailure(Exception exception)
+    {
+        for (var current = exception; current is not null; current = current.InnerException)
+        {
+            if (current is TimeoutException)
+            {
+                return true;
+            }
+
+            if (current is SqlException sqlException &&
+                (sqlException.IsTransient || sqlException.Errors.Cast<SqlError>().Any(error => error.Number == -2)))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
