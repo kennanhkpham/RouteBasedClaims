@@ -1,6 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { Claim } from '../../core/models/Claim.model';
 import { ClaimService } from '../../core/services/claim.service';
 
@@ -21,6 +22,7 @@ const CLAIM_STATUSES = [
 })
 export class ClaimReviewerComponent {
   private readonly claimService = inject(ClaimService);
+  private readonly router = inject(Router);
 
   readonly statuses = CLAIM_STATUSES;
   readonly claims = signal<Claim[]>([]);
@@ -100,6 +102,10 @@ export class ClaimReviewerComponent {
 
   setStatusFilter(filter: 'all' | 'pending'): void {
     this.statusFilter.set(filter);
+  }
+
+  openAdminAccountCreation(): void {
+    void this.router.navigateByUrl('/admin/accounts');
   }
 
   statusBadgeClass(status: string | undefined): string {

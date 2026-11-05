@@ -14,6 +14,7 @@ export interface CreatedAccountResponse {
   id: number;
   username: string;
   isAdmin: boolean;
+  department: string;
 }
 
 type StoredAuthSession = LoginResponse;
@@ -62,15 +63,15 @@ export class AuthService {
       .pipe(tap((response) => this.saveSession(response, 'Claimant')));
   }
 
-  createAccount(
+  createAdminAccount(
     username: string,
     password: string,
-    isAdmin: boolean,
+    department: string,
   ): Observable<CreatedAccountResponse> {
-    return this.http.post<CreatedAccountResponse>(`${this.apiUrl}/accounts`, {
+    return this.http.post<CreatedAccountResponse>(`${this.apiUrl}/admin/accounts`, {
       username,
       password,
-      isAdmin,
+      department,
     });
   }
 

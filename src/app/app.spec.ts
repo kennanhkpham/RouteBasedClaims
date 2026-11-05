@@ -48,6 +48,20 @@ describe('App', () => {
     expect(compiled.querySelector('.header-actions')?.textContent).toContain('Exit admin view');
   });
 
+  it('shows admin navigation when only an Admin session is active', () => {
+    const fixture = TestBed.createComponent(App);
+    const authService = TestBed.inject(AuthService);
+    vi.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
+    vi.spyOn(authService, 'isAdmin').mockReturnValue(true);
+
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('nav[aria-label="Main navigation"]')?.textContent)
+      .toContain('Claim Review');
+    expect(compiled.querySelector('.header-actions')?.textContent).toContain('Exit admin view');
+  });
+
   it('keeps claimant navigation focused on claimant actions', () => {
     const fixture = TestBed.createComponent(App);
     const authService = TestBed.inject(AuthService);
@@ -88,6 +102,20 @@ describe('App', () => {
 
     expect(confirmSpy).toHaveBeenCalledWith('Are you sure you want to sign out?');
     expect(logoutSpy).toHaveBeenCalledOnce();
+    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('returns an Admin-only session to sign-in when exiting admin review', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    const authService = TestBed.inject(AuthService);
+    vi.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
+    const logoutAdminSpy = vi.spyOn(authService, 'logoutAdmin');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate');
+
+    app.exitAdminReview();
+
+    expect(logoutAdminSpy).toHaveBeenCalledOnce();
     expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 });

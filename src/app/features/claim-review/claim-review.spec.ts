@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { Router, provideRouter } from '@angular/router';
 import { Claim } from '../../core/models/Claim.model';
 import { ClaimReviewerComponent } from './claim-review';
 
@@ -27,7 +28,7 @@ describe('ClaimReviewerComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ClaimReviewerComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -41,6 +42,15 @@ describe('ClaimReviewerComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('navigates to admin account creation', () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+
+    component.openAdminAccountCreation();
+
+    expect(navigateSpy).toHaveBeenCalledWith('/admin/accounts');
   });
 
   it('filters pending claims and searches across claim details', () => {

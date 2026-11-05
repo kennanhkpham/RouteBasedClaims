@@ -23,6 +23,6 @@ export class App {
 
   exitAdminReview(): void {
     this.authService.logoutAdmin();
-    void this.router.navigate(['/intake']);
+    void this.router.navigate([this.authService.isAuthenticated() ? '/intake' : '/login']);
   }
 }

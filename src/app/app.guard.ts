@@ -19,41 +19,33 @@ export const signedOutGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
+  if (authService.isAdmin()) {
+    return router.createUrlTree(['/review']);
+  }
+
   if (!authService.isAuthenticated()) {
     return true;
   }
 
-  return router.createUrlTree([authService.isAdmin() ? '/review' : '/intake']);
+  return router.createUrlTree(['/intake']);
 };
 
-export const adminGuard: CanActivateFn = (route, state) => {
+export const adminGuard: CanActivateFn = (_route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isAuthenticated() && authService.isAdmin()) {
+  if (authService.isAdmin()) {
     return true;
   }
 
-  if (authService.isAuthenticated()) {
-    return router.createUrlTree(['/admin-login'], {
-      queryParams: { returnUrl: state.url }
-    });
-  }
-
-  return router.createUrlTree(['/login'], {
+  return router.createUrlTree(['/admin-login'], {
     queryParams: { returnUrl: state.url }
   });
 };
 
-export const adminLoginGuard: CanActivateFn = (_route, state) => {
+export const adminLoginGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
-
-  if (!authService.isAuthenticated()) {
-    return router.createUrlTree(['/login'], {
-      queryParams: { returnUrl: state.url }
-    });
-  }
 
   return authService.isAdmin() ? router.createUrlTree(['/review']) : true;
 };

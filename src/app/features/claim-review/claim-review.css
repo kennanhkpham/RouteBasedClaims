@@ -33,6 +33,19 @@ h1 {
   margin: 0.6rem 0 0;
 }
 
+.review-actions {
+  margin-top: 0.9rem;
+}
+
+.account-button {
+  background: #126b57;
+  color: #fff;
+}
+
+.account-button:hover:not(:disabled) {
+  background: #0d5948;
+}
+
 button,
 select {
   font: inherit;

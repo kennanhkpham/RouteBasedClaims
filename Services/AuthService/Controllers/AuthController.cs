@@ -67,13 +67,19 @@ public sealed class AuthController(
         return Ok(CreateToken(account));
     }
 
-    [HttpPost("accounts")]
+    [HttpPost("admin/accounts")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<CreatedAccountResponse>> CreateAccount(
-        [FromBody] CreateAccountRequest request,
+    public async Task<ActionResult<CreatedAccountResponse>> CreateAdminAccount(
+        [FromBody] CreateAdminAccountRequest request,
         CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(request.Department))
+        {
+            return BadRequest(new { message = "Department is required." });
+        }
+
         var username = request.Username.Trim();
+        var department = request.Department.Trim();
         var normalizedUsername = NormalizeUsername(username);
         var usernameExists = await context.Accounts
             .AnyAsync(account => account.NormalizedUsername == normalizedUsername, cancellationToken);
@@ -87,7 +93,8 @@ public sealed class AuthController(
         {
             Username = username,
             NormalizedUsername = normalizedUsername,
-            IsAdmin = request.IsAdmin
+            IsAdmin = true,
+            Department = department
         };
         account.PasswordHash = passwordHasher.HashPassword(account, request.Password);
 
@@ -109,8 +116,8 @@ public sealed class AuthController(
         }
 
         return Created(
-            $"/api/auth/accounts/{account.Id}",
-            new CreatedAccountResponse(account.Id, account.Username, account.IsAdmin));
+            $"/api/auth/admin/accounts/{account.Id}",
+            new CreatedAccountResponse(account.Id, account.Username, account.IsAdmin, account.Department));
     }
 
     [HttpPost("login")]
@@ -245,7 +252,7 @@ public sealed class LoginRequest
     public string Password { get; init; } = string.Empty;
 }
 
-public sealed class CreateAccountRequest
+public sealed class CreateAdminAccountRequest
 {
     [Required]
     [StringLength(50, MinimumLength = 3)]
@@ -256,5 +263,7 @@ public sealed class CreateAccountRequest
     [StringLength(128, MinimumLength = 12)]
     public string Password { get; init; } = string.Empty;
 
-    public bool IsAdmin { get; init; }
+    [Required]
+    [StringLength(100, MinimumLength = 1)]
+    public string Department { get; init; } = string.Empty;
 }

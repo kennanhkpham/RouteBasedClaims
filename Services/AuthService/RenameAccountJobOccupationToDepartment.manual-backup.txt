@@ -1,0 +1,48 @@
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace AuthService.Migrations;
+
+public partial class RenameAccountJobOccupationToDepartment : Migration
+{
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.RenameColumn(
+            name: "JobOccupation",
+            table: "Account",
+            newName: "Department");
+
+        migrationBuilder.Sql("UPDATE [Account] SET [Department] = N'' WHERE [Department] IS NULL;");
+
+        migrationBuilder.AlterColumn<string>(
+            name: "Department",
+            table: "Account",
+            type: "nvarchar(100)",
+            maxLength: 100,
+            nullable: false,
+            defaultValue: "",
+            oldClrType: typeof(string),
+            oldType: "nvarchar(100)",
+            oldMaxLength: 100,
+            oldNullable: true);
+    }
+
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AlterColumn<string>(
+            name: "Department",
+            table: "Account",
+            type: "nvarchar(100)",
+            maxLength: 100,
+            nullable: true,
+            oldClrType: typeof(string),
+            oldType: "nvarchar(100)",
+            oldMaxLength: 100);
+
+        migrationBuilder.RenameColumn(
+            name: "Department",
+            table: "Account",
+            newName: "JobOccupation");
+    }
+}

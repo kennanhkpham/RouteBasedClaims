@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
 
   auth-migrate:
-    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/routebasedclaims-auth-service:1.0.0
+    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/routebasedclaims-auth-service:1.0.1
     build:
       context: .
       dockerfile: Services/AuthService/Dockerfile
@@ -59,7 +59,7 @@ services:
     restart: "no"
 
   auth-service:
-    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/routebasedclaims-auth-service:1.0.0
+    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/routebasedclaims-auth-service:1.0.1
     build:
       context: .
       dockerfile: Services/AuthService/Dockerfile
@@ -111,7 +111,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: ${DOCKERHUB_USERNAME:-local}/claimstream-frontend:${FRONTEND_IMAGE_TAG:-local}
+    image: ${DOCKERHUB_USERNAME:-local}/claimstream-frontend:1.0.2
     build:
       context: .
       dockerfile: Dockerfile.frontend

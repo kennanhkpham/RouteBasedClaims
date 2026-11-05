@@ -57,7 +57,8 @@ public sealed class AdminBootstrapService : IHostedService
             {
                 Username = username,
                 NormalizedUsername = normalizedUsername,
-                IsAdmin = true
+                IsAdmin = true,
+                Department = "Administration"
             };
             administrator.PasswordHash = passwordHasher.HashPassword(administrator, password);
             dbContext.Accounts.Add(administrator);

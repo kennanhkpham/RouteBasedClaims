@@ -7,5 +7,6 @@ public sealed class Account
     public string NormalizedUsername { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public bool IsAdmin { get; set; }
+    public string Department { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
