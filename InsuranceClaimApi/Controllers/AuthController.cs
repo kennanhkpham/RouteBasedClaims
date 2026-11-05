@@ -67,12 +67,17 @@ public class AuthController : ControllerBase
         return Ok(CreateToken(account));
     }
 
-    [HttpPost("accounts")]
+    [HttpPost("admin/accounts")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CreatedAccountResponse>> CreateAccount(
         [FromBody] CreateAccountRequest request,
         CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(request.Department))
+        {
+            return BadRequest(new { message = "Department is required." });
+        }
+
         var username = request.Username.Trim();
         var normalizedUsername = NormalizeUsername(username);
         var usernameExists = await _context.Accounts
@@ -87,7 +92,8 @@ public class AuthController : ControllerBase
         {
             Username = username,
             NormalizedUsername = normalizedUsername,
-            IsAdmin = request.IsAdmin
+            IsAdmin = true,
+            Department = request.Department.Trim()
         };
         account.PasswordHash = _passwordHasher.HashPassword(account, request.Password);
 
@@ -109,8 +115,8 @@ public class AuthController : ControllerBase
         }
 
         return Created(
-            $"/api/auth/accounts/{account.Id}",
-            new CreatedAccountResponse(account.Id, account.Username, account.IsAdmin));
+            $"/api/auth/admin/accounts/{account.Id}",
+            new CreatedAccountResponse(account.Id, account.Username, account.IsAdmin, account.Department));
     }
 
     [HttpPost("login")]
@@ -243,9 +249,11 @@ public sealed class CreateAccountRequest
     [StringLength(128, MinimumLength = 12)]
     public string Password { get; init; } = string.Empty;
 
-    public bool IsAdmin { get; init; }
+    [Required]
+    [StringLength(100, MinimumLength = 1)]
+    public string Department { get; init; } = string.Empty;
 }
 
-public sealed record CreatedAccountResponse(int Id, string Username, bool IsAdmin);
+public sealed record CreatedAccountResponse(int Id, string Username, bool IsAdmin, string Department);
 
 public sealed record LoginResponse(string Token, DateTime ExpiresAt, string Role);

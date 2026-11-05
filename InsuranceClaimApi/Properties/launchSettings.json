@@ -7,7 +7,9 @@
       "launchBrowser": false,
       "applicationUrl": "http://localhost:5284",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+      "AdminBootstrap__Username": "testadmin2",
+      "AdminBootstrap__Password": "adminpassword!"
       }
     },
     "https": {

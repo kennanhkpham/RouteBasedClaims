@@ -15,6 +15,7 @@ BEGIN
         NormalizedUsername nvarchar(50) not null,
         PasswordHash nvarchar(max) not null,
         IsAdmin bit not null default 0,
+        Department nvarchar(100) not null default N'',
         CreatedAt datetime2 not null
     );
     CREATE UNIQUE INDEX IX_Account_NormalizedUsername
@@ -30,6 +31,12 @@ BEGIN
         EXEC(N'UPDATE dbo.Account SET IsAdmin = CASE WHEN Role = N''Admin'' THEN 1 ELSE 0 END');
         ALTER TABLE dbo.Account DROP COLUMN Role;
     END;
+END;
+
+IF COL_LENGTH(N'dbo.Account', N'Department') IS NULL
+BEGIN
+    ALTER TABLE dbo.Account ADD Department nvarchar(100) NOT NULL
+        CONSTRAINT DF_Account_Department DEFAULT N'';
 END;
 
 IF OBJECT_ID(N'dbo.Client', N'U') IS NULL

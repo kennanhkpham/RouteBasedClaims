@@ -41,3 +41,13 @@ END;
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+IF COL_LENGTH(N'dbo.Account', N'Department') IS NULL
+BEGIN
+    ALTER TABLE [Account]
+        ADD [Department] nvarchar(100) NOT NULL
+        CONSTRAINT [DF_Account_Department] DEFAULT N'';
+END;
+COMMIT;
+GO
+
